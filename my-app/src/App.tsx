@@ -1,14 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
+import Header from './Header';
+import AppContainer from './AppContainer';
+
+const formFildes = [
+  { id:1, label:"First Name"},
+  { id:2, label:"Last Name"},
+  { id:3, label:"Email"}
+]
 
 function App() {
   return (
-    <div className="flex h-screen bg-gray-100 items-center">
-  <div className="w-64 p-4 mx-auto bg-white shadow-lg rounded-xl">
-    <h1 className="text-center text-xl">Welcome to <br /> #react-typescript with #tailwindcss </h1>
-    <img src={logo} className="animate-spin" alt="logo" />
-  </div>
-</div>
+   <AppContainer>
+   <div className="p-4 mx-auto bg-white shadow-lg rounded-xl">
+    <Header title ={"Welcome to React using Typescript!"}/> 
+    {
+      formFildes.map(field =>(
+        <React.Fragment key={field.id}>
+          <label>{field.label}</label>
+          <input className="border-2 border-gray-300 rounded-lg p-2 m-2 w-full" type="text"/>
+        </React.Fragment>
+      )) 
+    }
+   </div>
+
+   </AppContainer>
   );
 }
 
