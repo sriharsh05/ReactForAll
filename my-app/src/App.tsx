@@ -4,12 +4,7 @@ import AppContainer from "./components/AppContainer";
 import { Home } from "./components/Home";
 import Form from "./components/Form";
 
-const formFields = [
-  { id: 1, label: "First Name", type: "text" },
-  { id: 2, label: "Last Name", type: "text" },
-  { id: 3, label: "Email", type: "text" },
-  { id: 4, label: "Date of birth", type: "date" },
-];
+
 
 function App() {
   const [state, setState] = useState("HOME");
@@ -31,7 +26,7 @@ function App() {
         {state === "HOME" ? (
             <Home openFormCB={openForm} />
         ) : (
-          <Form formFields = {formFields} closeFormCB={closeForm} />
+            <Form closeFormCB={closeForm} />
         )}
       </div>
     </AppContainer>

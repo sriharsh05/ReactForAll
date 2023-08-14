@@ -1,16 +1,23 @@
 import React from "react";
 
-export default function LabeledInput(props : {key: number, label: string, type: string}){
+export default function LabeledInput(props : {id: number, label: string, type: string, removeFieldCB: (id: number) => void}){
     return (
-        <div className="p-4">
-            <React.Fragment key={props.key}>
+      <>
                 <label>{props.label}</label>
+                <div className="flex">
                 <input
                   className="border-2 border-gray-300 rounded-lg p-2 m-2 w-full"
                   type={props.type}
                 />
-              </React.Fragment>
-        </div>
+                <button
+                onClick={(_) =>props.removeFieldCB(props.id)}
+               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+          >
+            remove
+          </button>
+                </div>
+      </>         
+            
     )
 }
 
