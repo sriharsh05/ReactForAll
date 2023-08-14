@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Header from "./components/Header";
 import AppContainer from "./components/AppContainer";
 import { Home } from "./components/Home";
-import LabeledInput from "./components/LabeledInput";
+import Form from "./components/Form";
 
 const formFields = [
   { id: 1, label: "First Name", type: "text" },
@@ -13,6 +13,10 @@ const formFields = [
 
 function App() {
   const [state, setState] = useState("HOME");
+
+  const openForm = () =>{
+    setState("FORM");
+  }
   
   const closeForm = () =>{
     setState("HOME");
@@ -25,38 +29,9 @@ function App() {
           title={"Welcome to Lesson 5 of $react-typescript with #tailwindcss"}
         />
         {state === "HOME" ? (
-          <div className="flex flex-col justify-center">
-            <Home />
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
-              onClick={() => {
-                setState("FORM");
-              }}
-            >
-              Open Form
-            </button>
-          </div>
+            <Home openFormCB={openForm} />
         ) : (
-          <div className="p-4">
-            {formFields.map((field) => (
-              <LabeledInput
-                key = {field.id}
-                label = {field.label}
-                type = {field.type}
-              />
-            ))}
-            <div className="flex gap-4">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-4 rounded-lg">
-                Submit
-              </button>
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-                onClick={closeForm}
-              >
-                Close Form
-              </button>
-            </div>
-          </div>
+          <Form formFields = {formFields} closeFormCB={closeForm} />
         )}
       </div>
     </AppContainer>
