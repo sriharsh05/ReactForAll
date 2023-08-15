@@ -1,16 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LabeledInput from "./LabeledInput";
 
-const formFields = [
+interface formField {
+  id: number;
+  label: string;
+  type: string;
+  value: string;
+}
+
+const initialFormFields: formField[] = [
   { id: 1, label: "First Name", type: "text", value: "" },
   { id: 2, label: "Last Name", type: "text", value: "" },
   { id: 3, label: "Email", type: "text", value: "" },
   { id: 4, label: "Date of birth", type: "date", value: "" },
 ];
 
+const initialState: () => formField[] = () => {
+  const formFieldsJSON = localStorage.getItem("formFields");
+  const persistantFormFields = formFieldsJSON
+    ? JSON.parse(formFieldsJSON)
+    : initialFormFields;
+  return persistantFormFields;
+};
+
+const saveFormData = (currentState: formField[]) => {
+  localStorage.setItem("formFields", JSON.stringify(currentState));
+};
+
 export default function Form(props: { closeFormCB: () => void }) {
-  const [state, setState] = useState(formFields);
+  const [state, setState] = useState(initialState());
   const [newField, setNewField] = useState("");
+  useEffect(() => {
+    console.log("Component Mounted");
+    document.title = "Form Editor";
+
+    return () => {
+      document.title = "React App";
+    };
+  }, []);
+
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      saveFormData(state);
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [state]);
+
   const addField = () => {
     setState([
       ...state,
@@ -25,11 +62,7 @@ export default function Form(props: { closeFormCB: () => void }) {
   };
 
   const removeField = (id: number) => {
-    setState(
-      state.filter(
-        (field) => field.id !== id
-        )
-      );
+    setState(state.filter((field) => field.id !== id));
   };
   const setValue = (id: number, value: string) => {
     setState(
@@ -45,11 +78,7 @@ export default function Form(props: { closeFormCB: () => void }) {
     );
   };
   const clearForm = () => {
-    setState(
-      state.map(
-        (field) => ({ ...field, value: "" })
-        )
-      );
+    setState(state.map((field) => ({ ...field, value: "" })));
   };
   return (
     <div className="flex flex-col gap-2 p-4 divide-y divide-dotted">
@@ -82,8 +111,11 @@ export default function Form(props: { closeFormCB: () => void }) {
         </button>
       </div>
       <div className="flex gap-4">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-4 rounded-lg">
-          Submit
+        <button
+          onClick={(_) => saveFormData(state)}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
+        >
+          Save
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
