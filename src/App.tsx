@@ -4,18 +4,16 @@ import AppContainer from "./components/AppContainer";
 import { Home } from "./components/Home";
 import Form from "./components/Form";
 
-
-
 function App() {
   const [state, setState] = useState("HOME");
 
-  const openForm = () =>{
+  const openForm = () => {
     setState("FORM");
-  }
-  
-  const closeForm = () =>{
+  };
+
+  const closeForm = () => {
     setState("HOME");
-  } 
+  };
 
   return (
     <AppContainer>
@@ -24,9 +22,9 @@ function App() {
           title={"Welcome to Lesson 5 of $react-typescript with #tailwindcss"}
         />
         {state === "HOME" ? (
-            <Home openFormCB={openForm} />
+          <Home openFormCB={openForm} />
         ) : (
-            <Form closeFormCB={closeForm} />
+          <Form closeFormCB={closeForm} />
         )}
       </div>
     </AppContainer>
@@ -34,4 +32,3 @@ function App() {
 }
 
 export default App;
- 

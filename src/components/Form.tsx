@@ -25,11 +25,7 @@ export default function Form(props: { closeFormCB: () => void }) {
   };
 
   const removeField = (id: number) => {
-    setState(
-      state.filter(
-        (field) => field.id !== id
-        )
-      );
+    setState(state.filter((field) => field.id !== id));
   };
   const setValue = (id: number, value: string) => {
     setState(
@@ -45,11 +41,7 @@ export default function Form(props: { closeFormCB: () => void }) {
     );
   };
   const clearForm = () => {
-    setState(
-      state.map(
-        (field) => ({ ...field, value: "" })
-        )
-      );
+    setState(state.map((field) => ({ ...field, value: "" })));
   };
   return (
     <div className="flex flex-col gap-2 p-4 divide-y divide-dotted">
