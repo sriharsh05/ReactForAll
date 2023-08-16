@@ -20,11 +20,7 @@ function App() {
         />
         {formFildes.map((field) => (
           <>
-            <LabeledInput
-            id = {field.id}
-            label = {field.label}
-            type = {field.type}
-          />
+            <LabeledInput id={field.id} label={field.label} type={field.type} />
           </>
         ))}
         <button className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-full">
