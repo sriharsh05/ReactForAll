@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import LabeledInput from "./LabeledInput";
 
 interface formData {
+  id : number;
   title: string;
   formFields : formField[];
 }
@@ -20,23 +21,40 @@ const initialFormFields: formField[] = [
   { id: 4, label: "Date of birth", type: "date", value: "" },
 ];
 
+const getLocalForms: () => formData[] = () =>{
+  const savedFormsJSON = localStorage.getItem("savedForms");
+  const persistentFormFields = savedFormsJSON ? JSON.parse(savedFormsJSON) : [];
+  return persistentFormFields;
+} 
+
 const initialState: () => formData = () => {
-  const formFieldsJSON = localStorage.getItem("formData");
-  const persistantFormFields = formFieldsJSON
-    ? JSON.parse(formFieldsJSON)
-    :{
-        title : "untitled form",
+  const localForms = getLocalForms(); 
+  if(localForms.length > 0) {
+    return localForms[0];
+  }
+  const newForm = {
+        id : Number(new Date()),
+        title : "Untitled form",
         formFields :initialFormFields
       };
-  return persistantFormFields;
+  saveLocalForms([...localForms, newForm]);    
+  return newForm;
 };
 
+const saveLocalForms = (localForms: formData[]) => {
+  localStorage.setItem("savedForms", JSON.stringify(localForms)); 
+}
+
 const saveFormData = (currentState: formData) => {
-  localStorage.setItem("formData", JSON.stringify(currentState));
+  const localForms = getLocalForms();
+  const updatedLocalForms = localForms.map((form) =>
+    form.id === currentState.id ? currentState : form
+  );
+  saveLocalForms(updatedLocalForms);
 };
 
 export default function Form(props: { closeFormCB: () => void }) {
-  const [state, setState] = useState(initialState());
+  const [state, setState] = useState(() => initialState());
   const [newField, setNewField] = useState("");
   const titleRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -49,6 +67,7 @@ export default function Form(props: { closeFormCB: () => void }) {
   }, []);
 
   useEffect(() => {
+    
     let timeout = setTimeout(() => {
       saveFormData(state);
     }, 1000);
