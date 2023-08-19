@@ -3,9 +3,9 @@ import LabeledInput from "./LabeledInput";
 import { ListForms } from "./ListForms";
 
 export interface formData {
-  id : number;
+  id: number;
   title: string;
-  formFields : formField[];
+  formFields: formField[];
 }
 
 interface formField {
@@ -22,29 +22,29 @@ const initialFormFields: formField[] = [
   { id: 4, label: "Date of birth", type: "date", value: "" },
 ];
 
-const getLocalForms: () => formData[] = () =>{
+const getLocalForms: () => formData[] = () => {
   const savedFormsJSON = localStorage.getItem("savedForms");
   const persistentFormFields = savedFormsJSON ? JSON.parse(savedFormsJSON) : [];
   return persistentFormFields;
-} 
+};
 
 const initialState: () => formData = () => {
-  const localForms = getLocalForms(); 
-  if(localForms.length > 0) {
+  const localForms = getLocalForms();
+  if (localForms.length > 0) {
     return localForms[0];
   }
   const newForm = {
-        id : Number(new Date()),
-        title : "Untitled form",
-        formFields :initialFormFields
-      };
-  saveLocalForms([...localForms, newForm]);    
+    id: Number(new Date()),
+    title: "Untitled form",
+    formFields: initialFormFields,
+  };
+  saveLocalForms([...localForms, newForm]);
   return newForm;
 };
 
 const saveLocalForms = (localForms: formData[]) => {
-  localStorage.setItem("savedForms", JSON.stringify(localForms)); 
-}
+  localStorage.setItem("savedForms", JSON.stringify(localForms));
+};
 
 const saveFormData = (currentState: formData) => {
   const localForms = getLocalForms();
@@ -68,7 +68,6 @@ export default function Form(props: { closeFormCB: () => void }) {
   }, []);
 
   useEffect(() => {
-    
     let timeout = setTimeout(() => {
       saveFormData(state);
     }, 500);
@@ -88,7 +87,7 @@ export default function Form(props: { closeFormCB: () => void }) {
           type: "text",
           value: "",
         },
-      ]
+      ],
     });
     setNewField("");
   };
@@ -96,7 +95,7 @@ export default function Form(props: { closeFormCB: () => void }) {
   const removeField = (id: number) => {
     setState({
       ...state,
-      formFields : state.formFields.filter((field) => field.id !== id)
+      formFields: state.formFields.filter((field) => field.id !== id),
     });
   };
 
@@ -117,10 +116,9 @@ export default function Form(props: { closeFormCB: () => void }) {
       const updatedForms = localForms.filter((form) => form.id !== id);
       if (state.id === id) {
         setState(updatedForms[0]);
-       }
-      else {
+      } else {
         const FormIndex = updatedForms.findIndex(
-          (form) => form.id === state.id,
+          (form) => form.id === state.id
         );
         setState(updatedForms[FormIndex]);
       }
@@ -132,7 +130,7 @@ export default function Form(props: { closeFormCB: () => void }) {
     setState({
       ...state,
       formFields: state.formFields.map((field) =>
-        field.id === id ? { ...field, value } : field,
+        field.id === id ? { ...field, value } : field
       ),
     });
   };
@@ -147,27 +145,26 @@ export default function Form(props: { closeFormCB: () => void }) {
     });
   };
 
-
   return (
-   <div> 
-    <ListForms
+    <div>
+      <ListForms
         localForms={getLocalForms()}
         addFormCB={addForm}
         removeFormCB={removeForm}
         selectedFormCB={(form: formData) => setState(form)}
       />
-    <div className=" gap-2 p-4 border-gray-500 divide-dotted">
-      <div>
-      <input
-          type="text"
-          className="border-2 border-gray-300 rounded-lg p-2 my-2 flex-1"
-          value={state.title}
-          onChange={(e) => {
-            setState({...state, title: e.target.value });
-          }}
-          ref = {titleRef}
-        />
-      </div>
+      <div className=" gap-2 p-4 border-gray-500 divide-dotted">
+        <div>
+          <input
+            type="text"
+            className="border-2 border-gray-300 rounded-lg p-2 my-2 flex-1"
+            value={state.title}
+            onChange={(e) => {
+              setState({ ...state, title: e.target.value });
+            }}
+            ref={titleRef}
+          />
+        </div>
         {state.formFields.map((field) => (
           <LabeledInput
             id={field.id}
@@ -179,43 +176,43 @@ export default function Form(props: { closeFormCB: () => void }) {
             setValueCB={setValue}
           />
         ))}
-      <div className="flex gap-2 ">
-        <input
-          type="text"
-          className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-          value={newField}
-          onChange={(e) => {
-            setNewField(e.target.value);
-          }}
-        />
-        <button
-          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-          onClick={addField}
-        >
-          Add field
-        </button>
+        <div className="flex gap-2 ">
+          <input
+            type="text"
+            className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+            value={newField}
+            onChange={(e) => {
+              setNewField(e.target.value);
+            }}
+          />
+          <button
+            className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+            onClick={addField}
+          >
+            Add field
+          </button>
+        </div>
+        <div className="flex gap-4">
+          <button
+            onClick={(_) => saveFormData(state)}
+            className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
+          >
+            Save
+          </button>
+          <button
+            className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+            onClick={props.closeFormCB}
+          >
+            Close Form
+          </button>
+          <button
+            className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+            onClick={clearForm}
+          >
+            Clear Form
+          </button>
+        </div>
       </div>
-      <div className="flex gap-4">
-        <button
-          onClick={(_) => saveFormData(state)}
-          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
-        >
-          Save
-        </button>
-        <button
-          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-          onClick={props.closeFormCB}
-        >
-          Close Form
-        </button>
-        <button
-          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-          onClick={clearForm}
-        >
-          Clear Form
-        </button>
-      </div>
-    </div>
     </div>
   );
 }
