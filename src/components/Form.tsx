@@ -71,7 +71,7 @@ export default function Form(props: { closeFormCB: () => void }) {
     
     let timeout = setTimeout(() => {
       saveFormData(state);
-    }, 1000);
+    }, 500);
     return () => {
       clearTimeout(timeout);
     };
@@ -117,16 +117,16 @@ export default function Form(props: { closeFormCB: () => void }) {
       const updatedForms = localForms.filter((form) => form.id !== id);
       if (state.id === id) {
         setState(updatedForms[0]);
-      } else {
-        const currentFormIndex = updatedForms.findIndex(
+       }
+      else {
+        const FormIndex = updatedForms.findIndex(
           (form) => form.id === state.id,
         );
-        setState(updatedForms[currentFormIndex]);
+        setState(updatedForms[FormIndex]);
       }
       saveLocalForms(updatedForms);
     }
   };
-  
 
   const setValue = (id: number, value: string) => {
     setState({
@@ -152,9 +152,9 @@ export default function Form(props: { closeFormCB: () => void }) {
    <div> 
     <ListForms
         localForms={getLocalForms()}
-        selectFormCB={(form: formData) => setState(form)}
         addFormCB={addForm}
         removeFormCB={removeForm}
+        selectedFormCB={(form: formData) => setState(form)}
       />
     <div className=" gap-2 p-4 border-gray-500 divide-dotted">
       <div>
@@ -179,7 +179,7 @@ export default function Form(props: { closeFormCB: () => void }) {
             setValueCB={setValue}
           />
         ))}
-      <div className="flex gap-2">
+      <div className="flex gap-2 ">
         <input
           type="text"
           className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
@@ -189,7 +189,7 @@ export default function Form(props: { closeFormCB: () => void }) {
           }}
         />
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
           onClick={addField}
         >
           Add field
@@ -198,18 +198,18 @@ export default function Form(props: { closeFormCB: () => void }) {
       <div className="flex gap-4">
         <button
           onClick={(_) => saveFormData(state)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
+          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
         >
           Save
         </button>
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
           onClick={props.closeFormCB}
         >
           Close Form
         </button>
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
           onClick={clearForm}
         >
           Clear Form

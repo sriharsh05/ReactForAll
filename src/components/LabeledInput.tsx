@@ -19,7 +19,7 @@ export default function LabeledInput(props: {
         />
         <button
           onClick={(_) => props.removeFieldCB(props.id)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
         >
           remove
         </button>
