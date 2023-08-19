@@ -15,9 +15,16 @@ function App() {
   return (
     <AppContainer>
       <div className="p-4 mx-auto bg-stone-200 shadow-lg rounded-xl">
-        <Header title={"Welcome to Lesson 5 of $react-typescript with #tailwindcss"} />
+        <Header
+          title={"Welcome to Lesson 5 of $react-typescript with #tailwindcss"}
+        />
         {formFields.map((field) => (
-          <LabeledInput key={field.id} id={field.id} label={field.label} type={field.type} />
+          <LabeledInput
+            key={field.id}
+            id={field.id}
+            label={field.label}
+            type={field.type}
+          />
         ))}
         <button className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-full">
           Submit
