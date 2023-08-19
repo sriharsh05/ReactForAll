@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import LabeledInput from "./LabeledInput";
+import { ListForms } from "./ListForms";
 
-interface formData {
+export interface formData {
   id : number;
   title: string;
   formFields : formField[];
@@ -98,21 +99,44 @@ export default function Form(props: { closeFormCB: () => void }) {
       formFields : state.formFields.filter((field) => field.id !== id)
     });
   };
+
+  const addForm = () => {
+    const localForms = getLocalForms();
+    const newForm = {
+      id: Number(new Date()),
+      title: "Untitled Form",
+      formFields: initialFormFields,
+    };
+    saveLocalForms([...localForms, newForm]);
+    setState(newForm);
+  };
+
+  const removeForm = (id: number) => {
+    const localForms = getLocalForms();
+    if (localForms.length > 1) {
+      const updatedForms = localForms.filter((form) => form.id !== id);
+      if (state.id === id) {
+        setState(updatedForms[0]);
+      } else {
+        const currentFormIndex = updatedForms.findIndex(
+          (form) => form.id === state.id,
+        );
+        setState(updatedForms[currentFormIndex]);
+      }
+      saveLocalForms(updatedForms);
+    }
+  };
+  
+
   const setValue = (id: number, value: string) => {
     setState({
       ...state,
-      formFields: state.formFields.map((field) => {
-        if (field.id === id) {
-          return {
-            ...field,
-            value,
-          };
-        }
-        return field;
-      })
-    }   
-    );
+      formFields: state.formFields.map((field) =>
+        field.id === id ? { ...field, value } : field,
+      ),
+    });
   };
+
   const clearForm = () => {
     setState({
       ...state,
@@ -122,8 +146,18 @@ export default function Form(props: { closeFormCB: () => void }) {
       })),
     });
   };
+
+
   return (
-    <div className="flex flex-col gap-2 p-4 divide-y divide-dotted">
+   <div> 
+    <ListForms
+        localForms={getLocalForms()}
+        selectFormCB={(form: formData) => setState(form)}
+        addFormCB={addForm}
+        removeFormCB={removeForm}
+      />
+    <div className=" gap-2 p-4 border-gray-500 divide-dotted">
+      <div>
       <input
           type="text"
           className="border-2 border-gray-300 rounded-lg p-2 my-2 flex-1"
@@ -133,10 +167,11 @@ export default function Form(props: { closeFormCB: () => void }) {
           }}
           ref = {titleRef}
         />
-      <div>
+      </div>
         {state.formFields.map((field) => (
           <LabeledInput
             id={field.id}
+            key={field.id}
             label={field.label}
             type={field.type}
             value={field.value}
@@ -144,11 +179,10 @@ export default function Form(props: { closeFormCB: () => void }) {
             setValueCB={setValue}
           />
         ))}
-      </div>
       <div className="flex gap-2">
         <input
           type="text"
-          className="border-2 border-gray-300 rounded-lg p-2 my-2 flex-1"
+          className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
           value={newField}
           onChange={(e) => {
             setNewField(e.target.value);
@@ -181,6 +215,7 @@ export default function Form(props: { closeFormCB: () => void }) {
           Clear Form
         </button>
       </div>
+    </div>
     </div>
   );
 }

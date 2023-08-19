@@ -9,9 +9,8 @@ export default function LabeledInput(props: {
   setValueCB: (id: number, value: string) => void;
 }) {
   return (
-    <>
+    <div key={props.id} className="flex">
       <label>{props.label}</label>
-      <div key={props.id} className="flex">
         <input
           className="border-2 border-gray-300 rounded-lg p-2 m-2 w-full"
           type={props.type}
@@ -24,7 +23,6 @@ export default function LabeledInput(props: {
         >
           remove
         </button>
-      </div>
-    </>
+    </div>
   );
 }
