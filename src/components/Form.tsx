@@ -145,6 +145,15 @@ export default function Form(props: { closeFormCB: () => void }) {
     });
   };
 
+  const changeTitle = (title: string) => {
+    const localForms = getLocalForms();
+    const updatedForms = localForms.map((form)=> 
+       form.id === state.id ? {...form, title } : form
+    );
+    saveLocalForms(updatedForms);
+    setState({...state,title});
+  }
+
   return (
     <div>
       <ListForms
@@ -160,7 +169,7 @@ export default function Form(props: { closeFormCB: () => void }) {
             className="border-2 border-gray-300 rounded-lg p-2 my-2 flex-1"
             value={state.title}
             onChange={(e) => {
-              setState({ ...state, title: e.target.value });
+              changeTitle(e.target.value);
             }}
             ref={titleRef}
           />
@@ -194,7 +203,10 @@ export default function Form(props: { closeFormCB: () => void }) {
         </div>
         <div className="flex gap-4">
           <button
-            onClick={(_) => saveFormData(state)}
+            onClick={(_) =>{ 
+              saveFormData(state);
+              setState({...state});               
+            }}
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
           >
             Save
