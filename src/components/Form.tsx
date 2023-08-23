@@ -203,7 +203,10 @@ export default function Form(props: { closeFormCB: () => void }) {
         </div>
         <div className="flex gap-4">
           <button
-            onClick={(_) => saveFormData(state)}
+            onClick={(_) => {
+              saveFormData(state);
+              setState({...state}); 
+            }}
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
           >
             Save

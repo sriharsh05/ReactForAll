@@ -11,6 +11,18 @@ export default function Header(props: { title: String }) {
         style={{ animation: "spin 3s linear infinite" }}
       />
       <h1 className="text-center text-xl">{props.title} </h1>
+      <div className="flex gap-2 items-center">
+        {[
+          { page: "Home", url: "/"},
+          { page: "About", url: "/about"}
+        ].map((link) => (
+          <a
+          key={link.url}
+          href={link.url}
+          className="text-gray-800 p-2 m-2 uppercase"
+          >{link.page}</a>
+        ))}
+      </div>
     </div>
   );
 }
