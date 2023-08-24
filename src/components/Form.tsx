@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import LabeledInput from "./LabeledInput";
 import { Link } from "raviger";
 
-
 export interface formData {
   id: number;
   title: string;
@@ -29,9 +28,9 @@ export const getLocalForms: () => formData[] = () => {
   return persistentFormFields;
 };
 
-const initialState = (formID:number)  => {
+const initialState = (formID: number) => {
   const form = getFormByID(formID);
-    return form ? form : getLocalForms()[0];
+  return form ? form : getLocalForms()[0];
 };
 
 export const saveLocalForms = (localForms: formData[]) => {
@@ -46,11 +45,11 @@ const saveFormData = (currentState: formData) => {
   saveLocalForms(updatedLocalForms);
 };
 
-const getFormByID = (id:number) => {
+const getFormByID = (id: number) => {
   const localForms = getLocalForms();
   const currentForm = localForms.find((form) => form.id === id);
   return currentForm;
-}
+};
 
 export default function Form(props: { formId: number }) {
   const [state, setState] = useState(() => initialState(props.formId));
@@ -85,7 +84,7 @@ export default function Form(props: { formId: number }) {
         {
           id: Number(new Date()),
           label: newField.value,
-          type: "text",
+          type: newField.type,
           value: "",
         },
       ],
@@ -131,6 +130,29 @@ export default function Form(props: { formId: number }) {
     setState({ ...state, title });
   };
 
+  const changeLabel = (id: number, label: string) => {
+    setState({
+      ...state,
+      formFields: state.formFields.map((field: formField) =>
+        field.id === id ? { ...field, label } : field,
+      ),
+    });
+  };
+
+  const changeType = (id: number, type: string) => {
+    setState({
+      ...state,
+      formFields: state.formFields.map((field: formField) =>
+        field.id === id
+          ? {
+              ...field,
+              type,
+            }
+          : field,
+      ),
+    });
+  };
+
   return (
     <div>
       <div className=" gap-2 p-4 border-gray-500 divide-dotted">
@@ -154,6 +176,8 @@ export default function Form(props: { formId: number }) {
             value={field.value}
             removeFieldCB={removeField}
             setValueCB={setValue}
+            changeLabelCB={changeLabel}
+            changeTypeCB={changeType}
           />
         ))}
         <div className="flex gap-2 ">
@@ -168,6 +192,22 @@ export default function Form(props: { formId: number }) {
               });
             }}
           />
+            <select
+            className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
+            onChange={(e) => {
+              setNewField({
+                ...newField,
+                type: e.target.value,
+              });
+            }}
+          >
+            <option value="text">Text</option>
+            <option value="email">Email</option>
+            <option value="password">Password</option>
+            <option value="date">Date</option>
+            <option value="tel">Tel</option>
+            <option value="file">File</option>
+          </select>
           <button
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
             onClick={addField}
@@ -179,7 +219,7 @@ export default function Form(props: { formId: number }) {
           <button
             onClick={(_) => {
               saveFormData(state);
-              // setState({...state}); 
+              // setState({...state});
             }}
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
           >
