@@ -20,11 +20,11 @@ export default function Header(props: { title: String }) {
           key={link.url}
           href={link.url}
           className="text-gray-800 p-2 m-2 uppercase"
-          exactActiveClass="blue-500 border-b-2 border-blue-500"
+          exactActiveClass="text-blue-500"
           >{link.page}</ActiveLink>
         ))}
       </div>
-      <h1 className="text-center text-xl">{props.title} </h1>
+      <h1 className="text-center text-xl font-bold">{props.title} </h1>
     </div>
   );
 }
