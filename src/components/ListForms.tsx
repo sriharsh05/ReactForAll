@@ -20,7 +20,9 @@ export const ListForms = (prop: {
         <div className="flex flex-wrap justify-center m-2 overflow-y-auto max-w-screen-lg mx-auto">
           {prop.localForms
             .filter((form) => {
-              return form.title.toLowerCase().includes(prop.search?.toLowerCase() || "");
+              return form.title
+                .toLowerCase()
+                .includes(prop.search?.toLowerCase() || "");
             })
             .map((form: formStructure) => (
               <div

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { formData, getLocalForms } from "./Form";
 import { navigate } from "raviger";
 
-const getCurrentForm = (formId:number) : formData => {
-      const currentForm = getLocalForms().filter((form) => form.id === formId)[0];
-      return currentForm;
-  }
-  
+const getCurrentForm = (formId: number): formData => {
+  const currentForm = getLocalForms().filter((form) => form.id === formId)[0];
+  return currentForm;
+};
 
 export default function CustomPreviewComponent(props: { formId: number }) {
-  const [currentForm] = useState(() =>getCurrentForm(props.formId));
+  const [currentForm] = useState(() => getCurrentForm(props.formId));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const [formValues, setFormValues] = useState<string[]>([]);
@@ -42,9 +41,12 @@ export default function CustomPreviewComponent(props: { formId: number }) {
         <button
           className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg"
           onClick={() => {
-            if(currentIndex === 0) { navigate("/"); }
+            if (currentIndex === 0) {
+              navigate("/");
+            }
             setCurrentIndex(currentIndex - 1);
-            if (formValues[currentIndex - 1]) setInputValue(formValues[currentIndex - 1]);
+            if (formValues[currentIndex - 1])
+              setInputValue(formValues[currentIndex - 1]);
             else setInputValue("");
           }}
         >
@@ -52,16 +54,17 @@ export default function CustomPreviewComponent(props: { formId: number }) {
         </button>
         <button
           className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg disabled:hidden"
-          value = "Next"
+          value="Next"
           disabled={currentIndex === currentForm.formFields.length - 1}
           onClick={() => {
             setCurrentIndex(currentIndex + 1);
-            if (formValues[currentIndex + 1]) setInputValue(formValues[currentIndex + 1]);
+            if (formValues[currentIndex + 1])
+              setInputValue(formValues[currentIndex + 1]);
             else setInputValue("");
           }}
         >
           Next
-          </button>
+        </button>
         <button
           className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg disabled:hidden"
           disabled={currentIndex !== currentForm.formFields.length - 1}

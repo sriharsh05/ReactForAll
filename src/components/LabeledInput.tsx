@@ -20,9 +20,7 @@ export default function LabeledInput(props: {
             type="text"
             name="label"
             value={props.label}
-            onChange={(e) =>
-              props.changeLabelCB(props.id, e.target.value)
-            }
+            onChange={(e) => props.changeLabelCB(props.id, e.target.value)}
           />
         </div>
         <div className="flex flex-row">
@@ -31,9 +29,7 @@ export default function LabeledInput(props: {
             className="border-2 mt-2 border-gray-300 h-10 rounded-lg  focus:border-gray-500"
             value={props.type}
             name="type"
-            onChange={(e) =>
-              props.changeTypeCB(props.id, e.target.value)
-            }
+            onChange={(e) => props.changeTypeCB(props.id, e.target.value)}
           >
             <option value="text">Text</option>
             <option value="email">Email</option>

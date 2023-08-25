@@ -6,15 +6,15 @@ import { Home } from "../components/Home";
 import PreviewPage from "../components/PreviewPage";
 
 const routes = {
-    "/": () => <Home />,
-    "/about": () => <About />,
-    "/forms/:id": ({ id }: { id: string }) => <Form formId={Number(id)} />, 
-    "/preview/:id": ({ id }: { id: string }) => <PreviewPage formId={Number(id)} />,
-  };
+  "/": () => <Home />,
+  "/about": () => <About />,
+  "/forms/:id": ({ id }: { id: string }) => <Form formId={Number(id)} />,
+  "/preview/:id": ({ id }: { id: string }) => (
+    <PreviewPage formId={Number(id)} />
+  ),
+};
 
-  export default function AppRouter() {
-    const routeResult = useRoutes(routes);
-    return (
-      <AppContainer>{routeResult}</AppContainer>
-    );
-  }
+export default function AppRouter() {
+  const routeResult = useRoutes(routes);
+  return <AppContainer>{routeResult}</AppContainer>;
+}

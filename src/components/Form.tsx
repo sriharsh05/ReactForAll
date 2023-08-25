@@ -134,7 +134,7 @@ export default function Form(props: { formId: number }) {
     setState({
       ...state,
       formFields: state.formFields.map((field: formField) =>
-        field.id === id ? { ...field, label } : field,
+        field.id === id ? { ...field, label } : field
       ),
     });
   };
@@ -148,7 +148,7 @@ export default function Form(props: { formId: number }) {
               ...field,
               type,
             }
-          : field,
+          : field
       ),
     });
   };
@@ -192,7 +192,7 @@ export default function Form(props: { formId: number }) {
               });
             }}
           />
-            <select
+          <select
             className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
             onChange={(e) => {
               setNewField({

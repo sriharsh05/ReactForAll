@@ -13,15 +13,17 @@ export default function Header(props: { title: String }) {
       />
       <div className="flex gap-2 items-center">
         {[
-          { page: "Home", url: "/"},
-          { page: "About", url: "/about"}
+          { page: "Home", url: "/" },
+          { page: "About", url: "/about" },
         ].map((link) => (
           <ActiveLink
-          key={link.url}
-          href={link.url}
-          className="text-gray-800 p-2 m-2 uppercase"
-          exactActiveClass="text-blue-500"
-          >{link.page}</ActiveLink>
+            key={link.url}
+            href={link.url}
+            className="text-gray-800 p-2 m-2 uppercase"
+            exactActiveClass="text-blue-500"
+          >
+            {link.page}
+          </ActiveLink>
         ))}
       </div>
       <h1 className="text-center text-xl font-bold">{props.title} </h1>
