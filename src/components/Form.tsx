@@ -8,7 +8,7 @@ export interface formData {
   formFields: formField[];
 }
 
-interface formField {
+export interface formField {
   id: number;
   label: string;
   type: string;
@@ -18,7 +18,7 @@ interface formField {
 export const initialFormFields: formField[] = [
   { id: 1, label: "First Name", type: "text", value: "" },
   { id: 2, label: "Last Name", type: "text", value: "" },
-  { id: 3, label: "Email", type: "text", value: "" },
+  { id: 3, label: "Email", type: "email", value: "" },
   { id: 4, label: "Date of birth", type: "date", value: "" },
 ];
 
@@ -210,7 +210,7 @@ export default function Form(props: { formId: number }) {
           </select>
           <button
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-            onClick={addField}
+            onClick={()=>addField}
           >
             Add field
           </button>

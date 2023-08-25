@@ -25,6 +25,12 @@ export const ListForms = (prop: {
             >
               <p className="text-l font-bold">{form.title}</p>
               <div className="flex justify-end items-center mt-2">
+              <Link
+                    href={"/preview/" + form.id}
+                    className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg "
+                  >
+                    PREVIEW
+                  </Link>
                 <Link
                   className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg"
                   href={"/forms/" + form.id}
