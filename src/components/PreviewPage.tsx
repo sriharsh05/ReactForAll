@@ -7,7 +7,7 @@ const getCurrentForm = (formId: number): formData => {
   return currentForm;
 };
 
-export default function CustomPreviewComponent(props: { formId: number }) {
+export default function PreviewPage(props: { formId: number }) {
   const [currentForm] = useState(() => getCurrentForm(props.formId));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
