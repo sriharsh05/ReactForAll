@@ -2,8 +2,14 @@ import React from "react";
 import { formData } from "./Form";
 import { Link } from "raviger";
 
+interface formStructure {
+  id: number;
+  title: string;
+  fields: number;
+}
+
 export const ListForms = (prop: {
-  localForms: formData[];
+  localForms: formStructure[];
   addFormCB: () => void;
   removeFormCB: (id: number) => void;
   search: string;
@@ -18,19 +24,28 @@ export const ListForms = (prop: {
               .toLowerCase()
               .includes(prop.search?.toLowerCase() || "");
           })
-          .map((form: formData) => (
+          .map((form: formStructure) => (
             <div
               key={form.id}
               className="flex flex-col m-2 p-2  bg-cyan-500 text-black items-stretch rounded-xl"
             >
               <p className="text-l font-bold">{form.title}</p>
               <div className="flex justify-end items-center mt-2">
-              <Link
-                    href={"/preview/" + form.id}
-                    className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg "
-                  >
-                    PREVIEW
-                  </Link>
+              {form.fields === 0 ? (
+                    <Link
+                      href={"/"}
+                      className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg cursor-not-allowed opacity-50"
+                    >
+                      No Preview
+                    </Link>
+                  ) : (
+                    <Link
+                      href={"/preview/" + form.id}
+                      className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg "
+                    >
+                      PREVIEW
+                    </Link>
+                  )}
                 <Link
                   className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg"
                   href={"/forms/" + form.id}

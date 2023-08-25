@@ -35,6 +35,7 @@ export default function CustomPreviewComponent(props: { formId: number }) {
           type={currentForm.formFields[currentIndex].type}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          autoFocus
         />
       </div>
       <div className="flex flex-row items-center">

@@ -210,7 +210,7 @@ export default function Form(props: { formId: number }) {
           </select>
           <button
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-            onClick={()=>addField}
+            onClick={addField}
           >
             Add field
           </button>
@@ -219,7 +219,6 @@ export default function Form(props: { formId: number }) {
           <button
             onClick={(_) => {
               saveFormData(state);
-              // setState({...state});
             }}
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
           >

@@ -9,7 +9,7 @@ const getAllForms = () => {
     return {
       id: form.id,
       title: form.title,
-      formFields: form.formFields
+      fields: form.formFields.length
     };
   });
 };
