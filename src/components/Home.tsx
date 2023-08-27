@@ -13,7 +13,7 @@ const getAllForms = () => {
     return {
       id: form.id,
       title: form.title,
-      fields: form.formFields.length,
+      formFields: form.formFields,
     };
   });
 };

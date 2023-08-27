@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "raviger";
-import { formStructure } from "../types/formTypes";
+import { formData } from "../types/formTypes";
 
 export const ListForms = (prop: {
-  localForms: formStructure[];
+  localForms: formData[];
   addFormCB: () => void;
   removeFormCB: (id: number) => void;
   search: string;
@@ -18,14 +18,14 @@ export const ListForms = (prop: {
                 .toLowerCase()
                 .includes(prop.search?.toLowerCase() || "");
             })
-            .map((form: formStructure) => (
+            .map((form: formData) => (
               <div
                 key={form.id}
                 className="flex-col m-2 p-2 bg-cyan-500 text-black items-stretch rounded-xl"
               >
                 <p className="text-l font-bold">{form.title}</p>
                 <div className="flex justify-end items-center mt-2">
-                  {form.fields === 0 ? (
+                  {form.formFields.length === 0 ? (
                     <Link
                       href={"/"}
                       className="bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 m-4 rounded-lg cursor-not-allowed opacity-50"
