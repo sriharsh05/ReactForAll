@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { formData, getLocalForms } from "./Form";
 import { navigate } from "raviger";
+import { formData } from "../types/formTypes";
+import { getLocalForms } from "../utils/storageUtils";
 
 const getCurrentForm = (formId:number) : formData => {
       const currentForm = getLocalForms().filter((form) => form.id === formId)[0];

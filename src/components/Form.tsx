@@ -1,41 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import LabeledInput from "./LabeledInput";
 import { Link } from "raviger";
+import { formField, formData } from "../types/formTypes";
+import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
 
-export interface formData {
-  id: number;
-  title: string;
-  formFields: formField[];
-}
-
-export interface formField {
-  id: number;
-  label: string;
-  type: string;
-  value: string;
-}
-
-export const initialFormFields: formField[] = [
-  { id: 1, label: "First Name", type: "text", value: "" },
-  { id: 2, label: "Last Name", type: "text", value: "" },
-  { id: 3, label: "Email", type: "email", value: "" },
-  { id: 4, label: "Date of birth", type: "date", value: "" },
-];
-
-export const getLocalForms: () => formData[] = () => {
-  const savedFormsJSON = localStorage.getItem("savedForms");
-  const persistentFormFields = savedFormsJSON ? JSON.parse(savedFormsJSON) : [];
-  return persistentFormFields;
-};
 
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
   return form ? form : getLocalForms()[0];
 };
 
-export const saveLocalForms = (localForms: formData[]) => {
-  localStorage.setItem("savedForms", JSON.stringify(localForms));
-};
 
 const saveFormData = (currentState: formData) => {
   const localForms = getLocalForms();
