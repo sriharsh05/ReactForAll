@@ -1,12 +1,6 @@
 import React from "react";
-import { formData } from "./Form";
 import { Link } from "raviger";
-
-interface formStructure {
-  id: number;
-  title: string;
-  fields: number;
-}
+import { formStructure } from "../types/formTypes";
 
 export const ListForms = (prop: {
   localForms: formStructure[];

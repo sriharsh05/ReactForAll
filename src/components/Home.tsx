@@ -1,7 +1,11 @@
 import React, { useState } from "react";
-import { getLocalForms, initialFormFields, saveLocalForms } from "./Form";
 import { navigate, useQueryParams } from "raviger";
 import { ListForms } from "./ListForms";
+import {
+  getLocalForms,
+  initialFormFields,
+  saveLocalForms,
+} from "../utils/storageUtils";
 
 const getAllForms = () => {
   const localForms = getLocalForms();
