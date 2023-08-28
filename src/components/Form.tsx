@@ -56,9 +56,10 @@ export default function Form(props: { formId: number }) {
       formFields: [
         ...state.formFields,
         {
+          kind: "text",
           id: Number(new Date()),
           label: newField.value,
-          type: newField.type,
+          type: "text",  //type: newField.type
           value: "",
         },
       ],
@@ -114,6 +115,7 @@ export default function Form(props: { formId: number }) {
   };
 
   const changeType = (id: number, type: string) => {
+    if(type==="text"){
     setState({
       ...state,
       formFields: state.formFields.map((field: formField) =>
@@ -125,6 +127,7 @@ export default function Form(props: { formId: number }) {
           : field,
       ),
     });
+    }
   };
 
   return (
@@ -141,8 +144,10 @@ export default function Form(props: { formId: number }) {
             ref={titleRef}
           />
         </div>
-        {state.formFields.map((field) => (
-          <LabeledInput
+        {state.formFields.map((field) => {
+          switch(field.kind){
+            case "text" :
+              return <LabeledInput
             id={field.id}
             key={field.id}
             label={field.label}
@@ -153,7 +158,11 @@ export default function Form(props: { formId: number }) {
             changeLabelCB={changeLabel}
             changeTypeCB={changeType}
           />
-        ))}
+
+          case "dropdown" :
+            return <div></div>;
+          }}
+        )}
         <div className="flex gap-2 ">
           <input
             type="text"

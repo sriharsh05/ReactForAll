@@ -33,7 +33,7 @@ export default function CustomPreviewComponent(props: { formId: number }) {
         </label>
         <input
           className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-          type={currentForm.formFields[currentIndex].type}
+          type={currentForm.formFields[currentIndex].kind}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           autoFocus
@@ -68,6 +68,7 @@ export default function CustomPreviewComponent(props: { formId: number }) {
           disabled={currentIndex !== currentForm.formFields.length - 1}
           onClick={() => {
             setCurrentIndex(currentIndex + 1);
+            console.log(formValues);
             navigate("/");
           }}
         >
