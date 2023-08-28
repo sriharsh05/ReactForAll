@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import LabeledInput from "./LabeledInput";
 import { Link } from "raviger";
 import { formField, formData } from "../types/formTypes";
 import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
+import { createFormField } from "../utils/formFields";
 
 
 const initialState = (formID: number) => {
@@ -51,38 +51,21 @@ export default function Form(props: { formId: number }) {
   }, [state]);
 
   const addField = () => {
-    setState({
-      ...state,
-      formFields: [
-        ...state.formFields,
-        {
-          kind: "text",
-          id: Number(new Date()),
-          label: newField.value,
-          type: "text",  //type: newField.type
-          value: "",
-        },
-      ],
-    });
-    setNewField({
-      type: "text",
+		const newFormField = createFormField(newField.type, newField.value);
+		setState({
+			...state,
+			formFields: [...state.formFields, newFormField],
+		});
+		setNewField({
+      type: "",
       value: "",
     });
-  };
+	};
 
   const removeField = (id: number) => {
     setState({
       ...state,
       formFields: state.formFields.filter((field) => field.id !== id),
-    });
-  };
-
-  const setValue = (id: number, value: string) => {
-    setState({
-      ...state,
-      formFields: state.formFields.map((field) =>
-        field.id === id ? { ...field, value } : field
-      ),
     });
   };
 
@@ -105,34 +88,46 @@ export default function Form(props: { formId: number }) {
     setState({ ...state, title });
   };
 
-  const changeLabel = (id: number, label: string) => {
-    setState({
-      ...state,
-      formFields: state.formFields.map((field: formField) =>
-        field.id === id ? { ...field, label } : field,
-      ),
-    });
-  };
 
-  const changeType = (id: number, type: string) => {
-    if(type==="text"){
-    setState({
-      ...state,
-      formFields: state.formFields.map((field: formField) =>
-        field.id === id
-          ? {
-              ...field,
-              type,
-            }
-          : field,
-      ),
-    });
-    }
-  };
+  const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setState((form) => {
+			const updatedFormFields = form.formFields.map((field) => 
+        field.id === Number(e.target.id) 
+        ? {
+            ...field,
+            label: e.target.value,
+            value: e.target.value,
+          }
+        : field
+      );
+			return {
+				...form,
+				formFields: updatedFormFields,
+			};
+		});
+	};
+  
+  const addOptionsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const options = e.target.value.split(",");
+		setState((form) => {
+			const updatedFormFields = form.formFields.map((field) => 
+        field.id === Number(e.target.id)
+        ? {
+            ...field,
+            options: options,
+          }
+        : field
+      );
+			return {
+				...form,
+				formFields: updatedFormFields,
+			};
+		});
+	};
 
   return (
     <div>
-      <div className=" gap-2 p-4 border-gray-500 divide-dotted">
+      <div className="border-gray-500 p-4">
         <div>
           <input
             type="text"
@@ -144,25 +139,38 @@ export default function Form(props: { formId: number }) {
             ref={titleRef}
           />
         </div>
-        {state.formFields.map((field) => {
-          switch(field.kind){
-            case "text" :
-              return <LabeledInput
-            id={field.id}
-            key={field.id}
-            label={field.label}
-            type={field.type}
-            value={field.value}
-            removeFieldCB={removeField}
-            setValueCB={setValue}
-            changeLabelCB={changeLabel}
-            changeTypeCB={changeType}
-          />
-
-          case "dropdown" :
-            return <div></div>;
-          }}
-        )}
+        {state.formFields.map((field) => (
+            <div key={field.id} className="w-full">
+						<span className="text-lg font-semibold px-2">{field.label}</span>
+						<div className="flex gap-4">
+							<input
+								id={(field.id).toString()}
+								value={field.value}
+								className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+								onChange={inputHandler}
+								placeholder={field.label}
+							/>
+							{(field.kind === "dropdown" ||
+								field.kind === "radio" ||
+								field.kind === "multi-select") && (
+								<input
+									id={(field.id).toString()}
+									value={field.options.join(",")}
+									className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+									placeholder="Enter options seperated by commas(,)"
+									onChange={addOptionsHandler}
+								/>
+							)}
+							<button
+								type="button"
+								onClick={() => removeField(field.id)}
+								className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg">
+								Remove
+							</button>
+						</div>
+					</div>
+         ))
+        }
         <div className="flex gap-2 ">
           <input
             type="text"
@@ -184,12 +192,10 @@ export default function Form(props: { formId: number }) {
               });
             }}
           >
-            <option value="text">Text</option>
-            <option value="email">Email</option>
-            <option value="password">Password</option>
-            <option value="date">Date</option>
-            <option value="tel">Tel</option>
-            <option value="file">File</option>
+           <option value="text">Text</option>
+							<option value="dropdown">Dropdown</option>
+							<option value="radio">Radio</option>
+							<option value="multiselect">MultiSelect</option>
           </select>
           <button
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
@@ -199,14 +205,6 @@ export default function Form(props: { formId: number }) {
           </button>
         </div>
         <div className="flex gap-4">
-          <button
-            onClick={(_) => {
-              saveFormData(state);
-            }}
-            className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 my-4 rounded-lg"
-          >
-            Save
-          </button>
           <Link
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
             href="/"

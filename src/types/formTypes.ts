@@ -4,13 +4,11 @@ export type formData = {
   formFields: formField[];
 };
 
-type textFieldTypes = "text" | "email" | "date" | "password" | "tel" | "file";
-
 type TextField = {
   kind: "text"
   id: number
   label:string
-  type: textFieldTypes
+  type: string
   value: string
 }
 
@@ -22,4 +20,20 @@ type DropdownField = {
   value: string
 }
 
-export type formField = TextField | DropdownField
+type MultiSelectionField = {
+  kind: "multi-select"
+  id: number
+  label:string
+  options: string[]
+  value: string
+}
+
+type RadioButtonField = {
+  kind : "radio"
+  id: number
+  label:string
+  options: string[]
+  value: string
+}
+
+export type formField = TextField | DropdownField | MultiSelectionField | RadioButtonField
