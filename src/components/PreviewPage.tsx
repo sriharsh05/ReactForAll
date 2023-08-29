@@ -66,7 +66,7 @@ export default function PreviewPage(props: { formId: string }) {
     updateAnswer(selectedOption.join(","));
   }, [selectedOption]);
 
-  const updateAnswer = (value: string)  => {
+  const updateAnswer = (value: string) => {
     setAnswers((answers) => {
       const updatedAnswers = answers.map((answer) => {
         if (answer.id === (question?.id).toString()) {
@@ -112,8 +112,8 @@ export default function PreviewPage(props: { formId: string }) {
               case "text":
                 return (
                   <input
-				  id={(question?.id).toString()} 
-				    className="border-2 w-full border-gray-300 rounded-lg p-2 my-2 flex-1"
+                    id={(question?.id).toString()}
+                    className="border-2 w-full border-gray-300 rounded-lg p-2 my-2 flex-1"
                     type="text"
                     name={question?.label}
                     placeholder={question?.label}
@@ -135,7 +135,7 @@ export default function PreviewPage(props: { formId: string }) {
                     </option>
                     {question?.options.map((option, index) => (
                       <option key={index} value={option}>
-                        {index+1} <span>. </span> {option}
+                        {index + 1} <span>. </span> {option}
                       </option>
                     ))}
                   </select>
@@ -159,7 +159,7 @@ export default function PreviewPage(props: { formId: string }) {
                       <div>
                         <div className="flex gap-2 items-center hover:text-white hover:bg-blue-500 hover:cursor-pointer">
                           <input
-						    className="p-2"
+                            className="p-2"
                             type="checkbox"
                             name={"Select all"}
                             onChange={(e) => {
@@ -177,8 +177,8 @@ export default function PreviewPage(props: { formId: string }) {
                               className="flex gap-2 items-center hover:text-white hover:bg-blue-500 hover:cursor-pointer"
                             >
                               <input
-							    id={(question?.id).toString()}
-								              className="p-2"
+                                id={(question?.id).toString()}
+                                className="p-2"
                                 type="checkbox"
                                 name={option}
                                 value={option}
@@ -219,7 +219,8 @@ export default function PreviewPage(props: { formId: string }) {
             <button
               className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
               onClick={() =>
-                questionNumber > 0 && setQuestionNumber((questionNumber) => questionNumber - 1)
+                questionNumber > 0 &&
+                setQuestionNumber((questionNumber) => questionNumber - 1)
               }
             >
               Previous
@@ -239,7 +240,7 @@ export default function PreviewPage(props: { formId: string }) {
           {questionNumber === form.formFields.length - 1 && (
             <button
               className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-			  onClick={handleFormSubmit}
+              onClick={handleFormSubmit}
             >
               Submit
             </button>
@@ -257,5 +258,3 @@ export default function PreviewPage(props: { formId: string }) {
     </div>
   );
 }
-
-

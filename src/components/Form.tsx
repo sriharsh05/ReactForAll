@@ -4,12 +4,10 @@ import { formField, formData } from "../types/formTypes";
 import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
 import { createFormField } from "../utils/formFields";
 
-
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
   return form ? form : getLocalForms()[0];
 };
-
 
 const saveFormData = (currentState: formData) => {
   const localForms = getLocalForms();
@@ -51,16 +49,16 @@ export default function Form(props: { formId: number }) {
   }, [state]);
 
   const addField = () => {
-		const newFormField = createFormField(newField.type, newField.value);
-		setState({
-			...state,
-			formFields: [...state.formFields, newFormField],
-		});
-		setNewField({
+    const newFormField = createFormField(newField.type, newField.value);
+    setState({
+      ...state,
+      formFields: [...state.formFields, newFormField],
+    });
+    setNewField({
       type: "",
       value: "",
     });
-	};
+  };
 
   const removeField = (id: number) => {
     setState({
@@ -88,42 +86,41 @@ export default function Form(props: { formId: number }) {
     setState({ ...state, title });
   };
 
-
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setState((form) => {
-			const updatedFormFields = form.formFields.map((field) => 
-        field.id === Number(e.target.id) 
-        ? {
-            ...field,
-            label: e.target.value,
-            value: e.target.value,
-          }
-        : field
-      );
-			return {
-				...form,
-				formFields: updatedFormFields,
-			};
-		});
-	};
-  
-  const addOptionsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const options = e.target.value.split(",");
-		setState((form) => {
-			const updatedFormFields = form.formFields.map((field) => 
+    setState((form) => {
+      const updatedFormFields = form.formFields.map((field) =>
         field.id === Number(e.target.id)
-        ? {
-            ...field,
-            options: options,
-          }
-        : field
+          ? {
+              ...field,
+              label: e.target.value,
+              value: e.target.value,
+            }
+          : field
       );
-			return {
-				...form,
-				formFields: updatedFormFields,
-			};
-		});
-	};
+      return {
+        ...form,
+        formFields: updatedFormFields,
+      };
+    });
+  };
+
+  const addOptionsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const options = e.target.value.split(",");
+    setState((form) => {
+      const updatedFormFields = form.formFields.map((field) =>
+        field.id === Number(e.target.id)
+          ? {
+              ...field,
+              options: options,
+            }
+          : field
+      );
+      return {
+        ...form,
+        formFields: updatedFormFields,
+      };
+    });
+  };
 
   return (
     <div>
@@ -140,37 +137,37 @@ export default function Form(props: { formId: number }) {
           />
         </div>
         {state.formFields.map((field) => (
-            <div key={field.id} className="w-full">
-						<span className="text-lg font-semibold px-2">{field.label}</span>
-						<div className="flex gap-4">
-							<input
-								id={(field.id).toString()}
-								value={field.value}
-								className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-								onChange={inputHandler}
-								placeholder={field.label}
-							/>
-							{(field.kind === "dropdown" ||
-								field.kind === "radio" ||
-								field.kind === "multi-select") && (
-								<input
-									id={(field.id).toString()}
-									value={field.options.join(",")}
-									className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-									placeholder="Enter options seperated by commas(,)"
-									onChange={addOptionsHandler}
-								/>
-							)}
-							<button
-								type="button"
-								onClick={() => removeField(field.id)}
-								className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg">
-								Remove
-							</button>
-						</div>
-					</div>
-         ))
-        }
+          <div key={field.id} className="w-full">
+            <span className="text-lg font-semibold px-2">{field.label}</span>
+            <div className="flex gap-4">
+              <input
+                id={field.id.toString()}
+                value={field.value}
+                className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+                onChange={inputHandler}
+                placeholder={field.label}
+              />
+              {(field.kind === "dropdown" ||
+                field.kind === "radio" ||
+                field.kind === "multi-select") && (
+                <input
+                  id={field.id.toString()}
+                  value={field.options.join(",")}
+                  className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+                  placeholder="Enter options seperated by commas(,)"
+                  onChange={addOptionsHandler}
+                />
+              )}
+              <button
+                type="button"
+                onClick={() => removeField(field.id)}
+                className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
         <div className="flex gap-2 ">
           <input
             type="text"
@@ -183,7 +180,7 @@ export default function Form(props: { formId: number }) {
               });
             }}
           />
-            <select
+          <select
             className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
             onChange={(e) => {
               setNewField({
@@ -192,10 +189,10 @@ export default function Form(props: { formId: number }) {
               });
             }}
           >
-           <option value="text">Text</option>
-							<option value="dropdown">Dropdown</option>
-							<option value="radio">Radio</option>
-							<option value="multiselect">MultiSelect</option>
+            <option value="text">Text</option>
+            <option value="dropdown">Dropdown</option>
+            <option value="radio">Radio</option>
+            <option value="multiselect">MultiSelect</option>
           </select>
           <button
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
