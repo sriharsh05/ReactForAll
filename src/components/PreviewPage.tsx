@@ -135,7 +135,7 @@ export default function PreviewPage(props: { formId: string }) {
                     </option>
                     {question?.options.map((option, index) => (
                       <option key={index} value={option}>
-                        {index+1} <span>. </span> {option}
+                       {option}
                       </option>
                     ))}
                   </select>

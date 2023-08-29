@@ -25,6 +25,39 @@ const getFormByID = (id: number) => {
   return currentForm;
 };
 
+type RemoveAction = {
+  type: "remove_field",
+  id: number
+}
+
+type AddAction = {
+  type: "add_field",
+  kind: string,
+  label: string
+}
+
+type FormAction = AddAction | RemoveAction
+
+const reducer = (state: formData, action: FormAction) => {
+  switch(action.type){
+    case "add_field" :{
+      const newField = createFormField(action.kind, action.label);
+        return{
+          ...state,
+			   formFields: [...state.formFields, newField]
+        };
+    }
+    case "remove_field":{
+      return{
+        ...state,
+        formFields: state.formFields.filter(
+          (field) => field.id !== action.id
+        )
+      }
+    }  
+  }
+}
+
 export default function Form(props: { formId: number }) {
   const [state, setState] = useState(() => initialState(props.formId));
   const [newField, setNewField] = useState({
@@ -50,24 +83,11 @@ export default function Form(props: { formId: number }) {
     };
   }, [state]);
 
-  const addField = () => {
-		const newFormField = createFormField(newField.type, newField.value);
-		setState({
-			...state,
-			formFields: [...state.formFields, newFormField],
-		});
-		setNewField({
-      type: "",
-      value: "",
-    });
-	};
-
-  const removeField = (id: number) => {
-    setState({
-      ...state,
-      formFields: state.formFields.filter((field) => field.id !== id),
-    });
-  };
+  const dispatchAction = (action: FormAction) => {
+    setState((prevState) =>{
+      return reducer(prevState, action);
+    })
+  }
 
   const clearForm = () => {
     setState({
@@ -163,7 +183,7 @@ export default function Form(props: { formId: number }) {
 							)}
 							<button
 								type="button"
-								onClick={() => removeField(field.id)}
+								onClick={() => dispatchAction({type: "remove_field", id: field.id})}
 								className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg">
 								Remove
 							</button>
@@ -199,7 +219,11 @@ export default function Form(props: { formId: number }) {
           </select>
           <button
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-            onClick={addField}
+            onClick={(_)=>dispatchAction({
+              type: "add_field",
+              label: newField.value,
+              kind:newField.type,
+            })}
           >
             Add field
           </button>
