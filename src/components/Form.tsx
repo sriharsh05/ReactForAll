@@ -4,12 +4,10 @@ import { formField, formData } from "../types/formTypes";
 import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
 import { createFormField } from "../utils/formFields";
 
-
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
   return form ? form : getLocalForms()[0];
 };
-
 
 const saveFormData = (currentState: formData) => {
   const localForms = getLocalForms();
@@ -26,37 +24,37 @@ const getFormByID = (id: number) => {
 };
 
 type RemoveAction = {
-  type: "remove_field",
-  id: number
-}
+  type: "remove_field";
+  id: number;
+};
 
 type AddAction = {
-  type: "add_field",
-  kind: string,
-  label: string
-}
+  type: "add_field";
+  kind: string;
+  label: string;
+  clear: () => void;
+};
 
-type FormAction = AddAction | RemoveAction
+type FormAction = AddAction | RemoveAction;
 
 const reducer = (state: formData, action: FormAction) => {
-  switch(action.type){
-    case "add_field" :{
+  switch (action.type) {
+    case "add_field": {
       const newField = createFormField(action.kind, action.label);
-        return{
-          ...state,
-			   formFields: [...state.formFields, newField]
-        };
-    }
-    case "remove_field":{
-      return{
+      action.clear();
+      return {
         ...state,
-        formFields: state.formFields.filter(
-          (field) => field.id !== action.id
-        )
-      }
-    }  
+        formFields: [...state.formFields, newField],
+      };
+    }
+    case "remove_field": {
+      return {
+        ...state,
+        formFields: state.formFields.filter((field) => field.id !== action.id),
+      };
+    }
   }
-}
+};
 
 export default function Form(props: { formId: number }) {
   const [state, setState] = useState(() => initialState(props.formId));
@@ -84,10 +82,10 @@ export default function Form(props: { formId: number }) {
   }, [state]);
 
   const dispatchAction = (action: FormAction) => {
-    setState((prevState) =>{
+    setState((prevState) => {
       return reducer(prevState, action);
-    })
-  }
+    });
+  };
 
   const clearForm = () => {
     setState({
@@ -108,42 +106,48 @@ export default function Form(props: { formId: number }) {
     setState({ ...state, title });
   };
 
-
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setState((form) => {
-			const updatedFormFields = form.formFields.map((field) => 
-        field.id === Number(e.target.id) 
-        ? {
-            ...field,
-            label: e.target.value,
-            value: e.target.value,
-          }
-        : field
-      );
-			return {
-				...form,
-				formFields: updatedFormFields,
-			};
-		});
-	};
-  
-  const addOptionsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const options = e.target.value.split(",");
-		setState((form) => {
-			const updatedFormFields = form.formFields.map((field) => 
+    setState((form) => {
+      const updatedFormFields = form.formFields.map((field) =>
         field.id === Number(e.target.id)
-        ? {
-            ...field,
-            options: options,
-          }
-        : field
+          ? {
+              ...field,
+              label: e.target.value,
+              value: e.target.value,
+            }
+          : field
       );
-			return {
-				...form,
-				formFields: updatedFormFields,
-			};
-		});
-	};
+      return {
+        ...form,
+        formFields: updatedFormFields,
+      };
+    });
+  };
+
+  const addOptionsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const options = e.target.value.split(",");
+    setState((form) => {
+      const updatedFormFields = form.formFields.map((field) =>
+        field.id === Number(e.target.id)
+          ? {
+              ...field,
+              options: options,
+            }
+          : field
+      );
+      return {
+        ...form,
+        formFields: updatedFormFields,
+      };
+    });
+  };
+
+  const clearFieldText = () => {
+    setNewField({
+      type: "",
+      value: "",
+    });
+  };
 
   return (
     <div>
@@ -160,37 +164,39 @@ export default function Form(props: { formId: number }) {
           />
         </div>
         {state.formFields.map((field) => (
-            <div key={field.id} className="w-full">
-						<span className="text-lg font-semibold px-2">{field.label}</span>
-						<div className="flex gap-4">
-							<input
-								id={(field.id).toString()}
-								value={field.value}
-								className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-								onChange={inputHandler}
-								placeholder={field.label}
-							/>
-							{(field.kind === "dropdown" ||
-								field.kind === "radio" ||
-								field.kind === "multi-select") && (
-								<input
-									id={(field.id).toString()}
-									value={field.options.join(",")}
-									className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-									placeholder="Enter options seperated by commas(,)"
-									onChange={addOptionsHandler}
-								/>
-							)}
-							<button
-								type="button"
-								onClick={() => dispatchAction({type: "remove_field", id: field.id})}
-								className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg">
-								Remove
-							</button>
-						</div>
-					</div>
-         ))
-        }
+          <div key={field.id} className="w-full">
+            <span className="text-lg font-semibold px-2">{field.label}</span>
+            <div className="flex gap-4">
+              <input
+                id={field.id.toString()}
+                value={field.value}
+                className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+                onChange={inputHandler}
+                placeholder={field.label}
+              />
+              {(field.kind === "dropdown" ||
+                field.kind === "radio" ||
+                field.kind === "multi-select") && (
+                <input
+                  id={field.id.toString()}
+                  value={field.options.join(",")}
+                  className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+                  placeholder="Enter options seperated by commas(,)"
+                  onChange={addOptionsHandler}
+                />
+              )}
+              <button
+                type="button"
+                onClick={() =>
+                  dispatchAction({ type: "remove_field", id: field.id })
+                }
+                className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
         <div className="flex gap-2 ">
           <input
             type="text"
@@ -203,7 +209,7 @@ export default function Form(props: { formId: number }) {
               });
             }}
           />
-            <select
+          <select
             className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
             onChange={(e) => {
               setNewField({
@@ -212,18 +218,23 @@ export default function Form(props: { formId: number }) {
               });
             }}
           >
-           <option value="text">Text</option>
-							<option value="dropdown">Dropdown</option>
-							<option value="radio">Radio</option>
-							<option value="multiselect">MultiSelect</option>
+            <option value="text">Text</option>
+            <option value="dropdown">Dropdown</option>
+            <option value="radio">Radio</option>
+            <option value="multiselect">MultiSelect</option>
           </select>
           <button
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-            onClick={(_)=>dispatchAction({
-              type: "add_field",
-              label: newField.value,
-              kind:newField.type,
-            })}
+            onClick={(_) =>
+              dispatchAction({
+                type: "add_field",
+                label: newField.value,
+                kind: newField.type,
+                clear: () => {
+                  clearFieldText();
+                },
+              })
+            }
           >
             Add field
           </button>
