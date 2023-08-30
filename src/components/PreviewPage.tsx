@@ -95,6 +95,7 @@ export default function PreviewPage(props: { formId: string }) {
   };
 
   const handleFormSubmit = () => {
+    navigate('/');
     answers.forEach((answer) => {
       console.log(`${answer.label}: ${answer.value}\n`);
     });

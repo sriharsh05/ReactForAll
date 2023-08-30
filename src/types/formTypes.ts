@@ -37,10 +37,15 @@ type RadioButtonField = {
 }
 
 export type initialFormField = {
-	label: string;
-	kind: string;
-	type: string;
-	options: string;
+	label: string
+	kind: string
+	type: string
+	options: string
 };
 
 export type formField = TextField | DropdownField | MultiSelectionField | RadioButtonField
+
+export type previewForm = {
+  currentIndex: number
+  formAnswers: formData
+}
