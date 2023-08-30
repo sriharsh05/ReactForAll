@@ -3,6 +3,7 @@ import { Link } from "raviger";
 import { formData } from "../types/formTypes";
 import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
 import { formReducer } from "../reducers/formReducer";
+import { NewFieldReducer } from "../reducers/fieldReducer";
 
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
@@ -25,10 +26,14 @@ const getFormByID = (id: number) => {
 
 export default function Form(props: { formId: number }) {
   const [state, dispatch] = React.useReducer(formReducer, null,() => initialState(props.formId));
-  const [newField, setNewField] = useState({
+  const [newField, dispatchField] = React.useReducer(
+		NewFieldReducer,{
+    label: "",
+    kind: "",
     type: "text",
-    value: "",
+    options: "" 
   });
+  
   const titleRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     console.log("Component Mounted");
@@ -117,22 +122,22 @@ export default function Form(props: { formId: number }) {
           <input
             type="text"
             className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-            value={newField.value}
-            onChange={(e) => {
-              setNewField({
-                ...newField,
+            value={newField.label}
+            onChange={(e) =>
+              dispatchField({
+                type: "update_label",
                 value: e.target.value,
-              });
-            }}
+              })
+            }
           />
           <select
             className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
-            onChange={(e) => {
-              setNewField({
-                ...newField,
-                type: e.target.value,
-              });
-            }}
+            onChange={(e) =>
+              dispatchField({
+                 type: "update_kind", 
+                 value: e.target.value 
+                })
+            }
           >
             <option value="text">Text</option>
             <option value="dropdown">Dropdown</option>
@@ -144,12 +149,13 @@ export default function Form(props: { formId: number }) {
             onClick={(_) =>
               dispatch({
                 type: "add_field",
-                label: newField.value,
+                label: newField.label,
                 kind: newField.type,
-                callback: () => setNewField({
-                      type: "",
-                      value: "",
-                    })
+                callback: () => {
+                  dispatchField({
+                    type: "clear_field",
+                  });
+                },
               })
             }
           >

@@ -41,7 +41,6 @@ export type initialFormField = {
 	kind: string;
 	type: string;
 	options: string;
-	fileToUpload: File | null;
 };
 
 export type formField = TextField | DropdownField | MultiSelectionField | RadioButtonField

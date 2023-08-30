@@ -1,4 +1,4 @@
-import { initialFormField, formData } from "../types/formTypes";
+import { formData } from "../types/formTypes";
 import { createFormField } from "../utils/formFields";
 
 type AddAction = {
