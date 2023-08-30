@@ -3,10 +3,17 @@ import LabeledInput from "./LabeledInput";
 import { Link } from "raviger";
 import { formField, formData } from "../types/formTypes";
 import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
+import { ErrorPage } from "./ErrorPage";
 
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
-  return form ? form : getLocalForms()[0];
+  return form
+    ? form
+    : {
+        id: 404,
+        title: "Error Form",
+        formFields: [],
+      };
 };
 
 const saveFormData = (currentState: formData) => {
@@ -47,6 +54,10 @@ export default function Form(props: { formId: number }) {
       clearTimeout(timeout);
     };
   }, [state]);
+
+  if (!state || state.id === 404) {
+    return <ErrorPage />;
+  }
 
   const addField = () => {
     setState({

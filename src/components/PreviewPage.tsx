@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import { navigate } from "raviger";
 import { formData } from "../types/formTypes";
 import { getLocalForms } from "../utils/storageUtils";
+import { ErrorPage } from "./ErrorPage";
 
 const getCurrentForm = (formId: number): formData => {
-  const currentForm = getLocalForms().filter((form) => form.id === formId)[0];
-  return currentForm;
+  const currentForm = getLocalForms().find((form) => form.id === formId);
+  return currentForm
+    ? currentForm
+    : {
+        id: 404,
+        title: "Wrong Form",
+        formFields: [],
+      };
 };
 
 export default function PreviewPage(props: { formId: number }) {
@@ -22,6 +29,14 @@ export default function PreviewPage(props: { formId: number }) {
     });
     return () => {};
   }, [currentIndex, inputValue]);
+
+  if (
+    !currentForm ||
+    currentForm.id === 404 ||
+    currentForm.formFields.length === 0
+  ) {
+    return <ErrorPage />;
+  }
 
   return (
     <div className="flex flex-col items-center">
