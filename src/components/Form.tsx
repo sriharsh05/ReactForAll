@@ -151,7 +151,7 @@ export default function Form(props: { formId: number }) {
                 field.kind === "radio" ||
                 field.kind === "multi-select") && (
                 <input
-                  id={field.id.toString()}
+                  id={(field.id+1).toString()}
                   value={field.options.join(",")}
                   className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
                   placeholder="Enter options seperated by commas(,)"
@@ -188,6 +188,7 @@ export default function Form(props: { formId: number }) {
                 type: e.target.value,
               });
             }}
+            value={newField.type}
           >
             <option value="text">Text</option>
             <option value="dropdown">Dropdown</option>
