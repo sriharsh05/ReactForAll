@@ -36,4 +36,12 @@ type RadioButtonField = {
   value: string
 }
 
+export type initialFormField = {
+	label: string;
+	kind: string;
+	type: string;
+	options: string;
+	fileToUpload: File | null;
+};
+
 export type formField = TextField | DropdownField | MultiSelectionField | RadioButtonField

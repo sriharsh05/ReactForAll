@@ -3,6 +3,7 @@ import { Link } from "raviger";
 import { formField, formData } from "../types/formTypes";
 import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
 import { createFormField } from "../utils/formFields";
+import { formReducer, FormAction } from "../reducers/formReducer"
 
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
@@ -21,39 +22,6 @@ const getFormByID = (id: number) => {
   const localForms = getLocalForms();
   const currentForm = localForms.find((form) => form.id === id);
   return currentForm;
-};
-
-type RemoveAction = {
-  type: "remove_field";
-  id: number;
-};
-
-type AddAction = {
-  type: "add_field";
-  kind: string;
-  label: string;
-  clear: () => void;
-};
-
-type FormAction = AddAction | RemoveAction;
-
-const reducer = (state: formData, action: FormAction) => {
-  switch (action.type) {
-    case "add_field": {
-      const newField = createFormField(action.kind, action.label);
-      action.clear();
-      return {
-        ...state,
-        formFields: [...state.formFields, newField],
-      };
-    }
-    case "remove_field": {
-      return {
-        ...state,
-        formFields: state.formFields.filter((field) => field.id !== action.id),
-      };
-    }
-  }
 };
 
 export default function Form(props: { formId: number }) {
@@ -83,7 +51,7 @@ export default function Form(props: { formId: number }) {
 
   const dispatchAction = (action: FormAction) => {
     setState((prevState) => {
-      return reducer(prevState, action);
+      return formReducer(prevState, action);
     });
   };
 
@@ -230,9 +198,6 @@ export default function Form(props: { formId: number }) {
                 type: "add_field",
                 label: newField.value,
                 kind: newField.type,
-                clear: () => {
-                  clearFieldText();
-                },
               })
             }
           >
