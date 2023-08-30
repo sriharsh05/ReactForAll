@@ -5,6 +5,7 @@ type AddAction = {
   type: "add_field";
   kind: string;
   label: string;
+  callback: () => void;
 };
 
 type RemoveAction = {
@@ -12,7 +13,30 @@ type RemoveAction = {
   id: number;
 };
 
-export type FormAction = AddAction | RemoveAction;
+type UpdateTitleAction = {
+	type: "update_title";
+	title: string;
+};
+
+type UpdateLabelAction = {
+	type: "update_label";
+	id: string;
+	value: string;
+};
+
+type UpdateOptionsAction = {
+	type: "update_options";
+	id: string;
+	options: string;
+};
+
+
+export type FormAction = 
+            AddAction 
+            | RemoveAction
+            | UpdateTitleAction
+	          | UpdateLabelAction
+	          | UpdateOptionsAction;
 
 export const formReducer = (state: formData, action: FormAction): formData => {
   switch (action.type) {
@@ -21,6 +45,7 @@ export const formReducer = (state: formData, action: FormAction): formData => {
 
       if (createFormField(kind, label)) {
         const newField = createFormField(kind, label);
+        action.callback();
         return {
           ...state,
           formFields: [...state.formFields, newField],
@@ -34,5 +59,40 @@ export const formReducer = (state: formData, action: FormAction): formData => {
             formFields: state.formFields.filter((field) => field.id !== action.id)
         }
     }
+    case "update_title": {
+			return {
+				...state,
+				title: action.title,
+			};
+		}
+
+		case "update_label": {
+			const { id, value } = action;
+			return {
+				...state,
+				formFields: state.formFields.map((field) => {
+					if (field.id === Number(id)) 
+             return { ...field, label: value, value:value };
+					return field;
+				}),
+			};
+		}
+
+		case "update_options": {
+			const { id, options } = action;
+			const fieldOptions = options.split(",");
+			return {
+				...state,
+				formFields: state.formFields.map((field) => {
+					if (field.id === Number(id))
+             return { ...field, options: fieldOptions };
+					return field;
+				}),
+			};
+		}
+    
+    default:
+			return state;
+
   }
 };
