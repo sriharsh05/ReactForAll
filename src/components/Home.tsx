@@ -4,7 +4,7 @@ import { ListForms } from "./ListForms";
 import {initialFormFields, getLocalForms, saveLocalForms } from "../utils/storageUtils";
 
 const getAllForms = () => {
-  const localForms = getLocalForms();
+  const localForms = getLocalForms("formData");
   return localForms.map((form) => {
     return {
       id: form.id,
@@ -21,22 +21,22 @@ export function Home() {
   const [searchString, setSearchString] = useState("");
 
   const addForm = () => {
-    const localForms = getLocalForms();
+    const localForms = getLocalForms("formData");
     const formID = Number(new Date());
     const newForm = {
       id: formID,
       title: "Untitled Form",
       formFields: initialFormFields,
     };
-    saveLocalForms([...localForms, newForm]);
+    saveLocalForms("formData", [...localForms, newForm]);
     setState(getAllForms());
     navigate("/forms/" + formID);
   };
 
   const removeForm = (id: number) => {
-    const localForms = getLocalForms();
+    const localForms = getLocalForms("formData");
     const newLocalForms = localForms.filter((form) => form.id !== id);
-    saveLocalForms(newLocalForms);
+    saveLocalForms("formData", newLocalForms);
     setState(getAllForms());
   };
 

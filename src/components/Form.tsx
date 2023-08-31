@@ -4,22 +4,29 @@ import { formData } from "../types/formTypes";
 import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
 import { formReducer } from "../reducers/formReducer";
 import { NewFieldReducer } from "../reducers/fieldReducer";
+import { ErrorPage } from "./ErrorPage";
 
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
-  return form ? form : getLocalForms()[0];
+  return form
+    ? form
+    : {
+        id: 404,
+        title: "Error Form",
+        formFields: [],
+      };
 };
 
 const saveFormData = (currentState: formData) => {
-  const localForms = getLocalForms();
+  const localForms = getLocalForms("formData");
   const updatedLocalForms = localForms.map((form) =>
     form.id === currentState.id ? currentState : form
   );
-  saveLocalForms(updatedLocalForms);
+  saveLocalForms("formData", updatedLocalForms);
 };
 
 const getFormByID = (id: number) => {
-  const localForms = getLocalForms();
+  const localForms = getLocalForms("formData");
   const currentForm = localForms.find((form) => form.id === id);
   return currentForm;
 };
@@ -52,6 +59,11 @@ export default function Form(props: { formId: number }) {
       clearTimeout(timeout);
     };
   }, [state]);
+
+  if (!state || state.id === 404) {
+    return <ErrorPage />;
+  }
+
 
   return (
     <div>
@@ -138,7 +150,11 @@ export default function Form(props: { formId: number }) {
                  value: e.target.value 
                 })
             }
+            value = {newField.type}
           >
+            <option disabled value="">
+								Select  kind
+						</option>
             <option value="text">Text</option>
             <option value="dropdown">Dropdown</option>
             <option value="radio">Radio</option>

@@ -7,12 +7,13 @@ export const initialFormFields: formField[] = [
     { kind: "text",id: 4, label: "Date of birth", type: "date", value: "" },
   ];
 
-export const saveLocalForms = (localForms: formData[]) => {
-    localStorage.setItem("savedForms", JSON.stringify(localForms));
+export const saveLocalForms = (storageType: string, localForms: formData[]) => {
+    localStorage.setItem(storageType, JSON.stringify(localForms));
   };
 
-export const getLocalForms: () => formData[] = () => {
-    const savedFormsJSON = localStorage.getItem("savedForms");
+  export const getLocalForms = (storageType: string): formData[] => {
+    const savedFormsJSON = localStorage.getItem(storageType);
     const persistentFormFields = savedFormsJSON ? JSON.parse(savedFormsJSON) : [];
     return persistentFormFields;
-  };  
+  };
+    

@@ -10,7 +10,7 @@ type CustomField = {
 };
 
 const fetchFormData = (formId: string): formData => {
-  const forms = getLocalForms();
+  const forms = getLocalForms("formData");
   const form = forms.find((form) => form.id === Number(formId));
   if (!form || form === undefined) {
     navigate("/");
