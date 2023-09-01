@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { navigate, useQueryParams } from "raviger";
 import { ListForms } from "./ListForms";
-import {initialFormFields, getLocalForms, saveLocalForms } from "../utils/storageUtils";
+import {
+  initialFormFields,
+  getLocalForms,
+  saveLocalForms,
+} from "../utils/storageUtils";
 
 const getAllForms = () => {
   const localForms = getLocalForms("formData");
@@ -9,11 +13,10 @@ const getAllForms = () => {
     return {
       id: form.id,
       title: form.title,
-      formFields: form.formFields
+      formFields: form.formFields,
     };
   });
 };
-
 
 export function Home() {
   const [state, setState] = useState(() => getAllForms());
@@ -43,7 +46,7 @@ export function Home() {
   return (
     <div className="flex flex-col justify-center">
       <div className="flex">
-      <form
+        <form
           onSubmit={(e) => {
             e.preventDefault();
             setQuery({ search: searchString });
@@ -62,7 +65,7 @@ export function Home() {
 
       <ListForms
         localForms={state}
-        addFormCB={addForm} 
+        addFormCB={addForm}
         removeFormCB={removeForm}
         search={search}
       />

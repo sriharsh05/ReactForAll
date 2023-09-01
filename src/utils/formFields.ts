@@ -21,14 +21,14 @@ const dropdownFormField = (label: string): formField => {
 };
 
 const multiselectFormField = (label: string): formField => {
-    return {
-      kind: "multi-select",
-      id: Number(new Date()),
-      label: label,
-      options: [],
-      value: "",
-    };
+  return {
+    kind: "multi-select",
+    id: Number(new Date()),
+    label: label,
+    options: [],
+    value: "",
   };
+};
 
 const radioFormField = (label: string): formField => {
   return {
@@ -40,7 +40,6 @@ const radioFormField = (label: string): formField => {
   };
 };
 
-
 export const createFormField = (kind: string, label: string): formField => {
   switch (kind) {
     case "dropdown":
@@ -50,6 +49,6 @@ export const createFormField = (kind: string, label: string): formField => {
     case "radio":
       return radioFormField(label);
     default:
-        return textFormField(label);  
+      return textFormField(label);
   }
 };

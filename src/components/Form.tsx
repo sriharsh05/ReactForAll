@@ -23,15 +23,16 @@ const getFormByID = (id: number) => {
 };
 
 export default function Form(props: { formId: number }) {
-  const [state, dispatch] = React.useReducer(formReducer, null,() => initialState(props.formId));
-  const [newField, dispatchField] = React.useReducer(
-		NewFieldReducer,{
+  const [state, dispatch] = React.useReducer(formReducer, null, () =>
+    initialState(props.formId)
+  );
+  const [newField, dispatchField] = React.useReducer(NewFieldReducer, {
     label: "",
     kind: "",
     type: "text",
-    options: "" 
+    options: "",
   });
-  
+
   const titleRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     console.log("Component Mounted");
@@ -55,7 +56,6 @@ export default function Form(props: { formId: number }) {
     return <ErrorPage />;
   }
 
-
   return (
     <div>
       <div className="border-gray-500 p-4">
@@ -64,11 +64,12 @@ export default function Form(props: { formId: number }) {
             type="text"
             className="border-2 border-gray-300 rounded-lg p-2 my-2 flex-1"
             value={state.title}
-            onChange={(e) => dispatch({ 
-              type: "update_title",
-               title: e.target.value 
-              }
-              )}
+            onChange={(e) =>
+              dispatch({
+                type: "update_title",
+                title: e.target.value,
+              })
+            }
             ref={titleRef}
           />
         </div>
@@ -81,29 +82,29 @@ export default function Form(props: { formId: number }) {
                 value={field.value}
                 className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
                 onChange={(e) =>
-									dispatch({
-										type: "update_label",
-										id: (field.id).toString(),
-										value: e.target.value,
-									})
-								}
+                  dispatch({
+                    type: "update_label",
+                    id: field.id.toString(),
+                    value: e.target.value,
+                  })
+                }
                 placeholder={field.label}
               />
               {(field.kind === "dropdown" ||
                 field.kind === "radio" ||
                 field.kind === "multi-select") && (
                 <input
-                  id={(field.id+1).toString()}
+                  id={(field.id + 1).toString()}
                   value={field.options.join(",")}
                   className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
                   placeholder="Enter options seperated by commas(,)"
                   onChange={(e) =>
-										dispatch({
-											type: "update_options",
-											id: (field.id).toString(),
-											options: e.target.value,
-										})
-									}
+                    dispatch({
+                      type: "update_options",
+                      id: field.id.toString(),
+                      options: e.target.value,
+                    })
+                  }
                 />
               )}
               <button
@@ -137,15 +138,15 @@ export default function Form(props: { formId: number }) {
             className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
             onChange={(e) =>
               dispatchField({
-                 type: "update_kind", 
-                 value: e.target.value 
-                })
+                type: "update_kind",
+                value: e.target.value,
+              })
             }
-            value = {newField.type}
+            value={newField.type}
           >
             <option disabled value="">
-								Select  kind
-						</option>
+              Select kind
+            </option>
             <option value="text">Text</option>
             <option value="dropdown">Dropdown</option>
             <option value="radio">Radio</option>
