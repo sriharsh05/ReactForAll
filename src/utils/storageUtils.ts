@@ -16,4 +16,12 @@ export const saveLocalForms = (storageType: string, localForms: formData[]) => {
     const persistentFormFields = savedFormsJSON ? JSON.parse(savedFormsJSON) : [];
     return persistentFormFields;
   };
+
+  export const saveFormData = (strorageType:string, currentState: formData) => {
+    const localForms = getLocalForms(strorageType);
+    const updatedLocalForms = localForms.map((form) =>
+      form.id === currentState.id ? currentState : form
+    );
+    saveLocalForms(strorageType, updatedLocalForms);
+  };
     

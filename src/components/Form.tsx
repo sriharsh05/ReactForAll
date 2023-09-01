@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "raviger";
-import { formData } from "../types/formTypes";
-import { getLocalForms, saveLocalForms } from "../utils/storageUtils";
+import { getLocalForms, saveFormData } from "../utils/storageUtils";
 import { formReducer } from "../reducers/formReducer";
 import { NewFieldReducer } from "../reducers/fieldReducer";
 import { ErrorPage } from "./ErrorPage";
@@ -15,14 +14,6 @@ const initialState = (formID: number) => {
         title: "Error Form",
         formFields: [],
       };
-};
-
-const saveFormData = (currentState: formData) => {
-  const localForms = getLocalForms("formData");
-  const updatedLocalForms = localForms.map((form) =>
-    form.id === currentState.id ? currentState : form
-  );
-  saveLocalForms("formData", updatedLocalForms);
 };
 
 const getFormByID = (id: number) => {
@@ -53,7 +44,7 @@ export default function Form(props: { formId: number }) {
 
   useEffect(() => {
     let timeout = setTimeout(() => {
-      saveFormData(state);
+      saveFormData("formData", state);
     }, 500);
     return () => {
       clearTimeout(timeout);

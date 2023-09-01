@@ -2,7 +2,7 @@ import { previewForm } from "../types/formTypes"
 
 type UpdateAnswerAction = {
     type: "update_answer"
-    id: string
+    id: number
     value: string
 }
 
@@ -13,7 +13,7 @@ type UpdateCurrentIndexAction = {
 
 type PreviewAction = UpdateAnswerAction | UpdateCurrentIndexAction
 
-export const previewReducer = ( state: previewForm, action: PreviewAction) : previewForm =>{
+export const previewFormReducer = ( state: previewForm, action: PreviewAction) : previewForm =>{
     switch(action.type){
         case "update_answer": {
             return {
