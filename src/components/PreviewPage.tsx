@@ -49,8 +49,8 @@ export default function PreviewPage(props: { formId: string }) {
 
   const submitForm = () => {
     navigate("/");
-    form.formFields.forEach((field) => {
-      console.log(`${field.label}: ${field.value}\n`);
+    dispatch({
+      type: "form_submit",
     });
   };
 

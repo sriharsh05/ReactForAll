@@ -11,7 +11,11 @@ type UpdateCurrentIndexAction = {
   idx: number;
 };
 
-type PreviewAction = UpdateAnswerAction | UpdateCurrentIndexAction;
+type FormSubmitAction = {
+  type: "form_submit";
+}
+
+type PreviewAction = UpdateAnswerAction | UpdateCurrentIndexAction | FormSubmitAction;
 
 export const previewFormReducer = (
   state: previewForm,
@@ -41,5 +45,13 @@ export const previewFormReducer = (
         currentIndex: action.idx,
       };
     }
+
+    case "form_submit" :{
+      state.formAnswers.formFields.forEach((field) => {
+        console.log(`${field.label}: ${field.value}\n`);
+      });
+      return state;
+    }
+
   }
 };
