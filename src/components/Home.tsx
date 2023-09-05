@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { navigate, useQueryParams } from "raviger";
 import { ListForms } from "./ListForms";
 import {initialFormFields, getLocalForms, saveLocalForms } from "../utils/storageUtils";
+import { Form, formData } from "../types/formTypes";
 
 const getAllForms = () => {
   const localForms = getLocalForms("formData");
@@ -14,11 +15,21 @@ const getAllForms = () => {
   });
 };
 
+const fetchForms = async (setStateCB: (value: Form[]) => void) => {
+  const response = await fetch("https://tsapi.coronasafe.live/api/mock_test/")
+  const jsonData = await response.json();
+  setStateCB(jsonData);
+}
+
 
 export function Home() {
-  const [state, setState] = useState(() => getAllForms());
+  const [state, setState] = useState<Form[]>(() => getAllForms());
   const [{ search }, setQuery] = useQueryParams();
   const [searchString, setSearchString] = useState("");
+
+  useEffect(() => {
+    fetchForms(setState);
+  }, []);
 
   const addForm = () => {
     const localForms = getLocalForms("formData");
