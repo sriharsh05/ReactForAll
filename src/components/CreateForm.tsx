@@ -25,21 +25,6 @@ export default function CreateForm() {
 		setErrors(validationErrors);
 
 		if (Object.keys(validationErrors).length === 0) {
-			//Basic Auth Credentials
-            // const auth = "Basic " + window.btoa("sriharsh:J99WCbh3sfrwmFB")
-            // const response = await fetch("https://tsapi.coronasafe.live/api/forms/", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //         Authorization: auth,
-            //     },
-            //     body: JSON.stringify(form),
-            // });
-            // const data = await response.json();
-            // console.log(data)
-            // if(response.ok){
-            //     navigate(`/forms/${data.id}`)
-            // }
 			try{
 				const data = await createForm(form)
 				console.log(data);
