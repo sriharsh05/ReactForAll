@@ -3,6 +3,8 @@ import { navigate, useQueryParams } from "raviger";
 import { ListForms } from "./ListForms";
 import {initialFormFields, getLocalForms, saveLocalForms } from "../utils/storageUtils";
 import { Form, formData } from "../types/formTypes";
+import { listForms } from "../utils/apiUtils";
+import { Pagination } from "../types/common";
 
 const getAllForms = () => {
   const localForms = getLocalForms("formData");
@@ -16,11 +18,13 @@ const getAllForms = () => {
 };
 
 const fetchForms = async (setStateCB: (value: Form[]) => void) => {
-  const response = await fetch("https://tsapi.coronasafe.live/api/mock_test/")
-  const jsonData = await response.json();
-  setStateCB(jsonData);
+  try{
+    const data: Pagination<Form> = await listForms({ offset:0, limit:2 });
+    setStateCB(data.results);
+  }catch(error){
+    console.log(error);
+  }
 }
-
 
 export function Home() {
   const [state, setState] = useState<Form[]>(() => getAllForms());
