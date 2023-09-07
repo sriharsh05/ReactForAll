@@ -1,5 +1,5 @@
 import { PaginationParams } from "../types/common";
-import { Form } from "../types/formTypes";
+import { Form, formField } from "../types/formTypes";
 
 const API_BASE_URL = "https://tsapi.coronasafe.live/api/";
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'
@@ -30,7 +30,6 @@ export const request = async (endpoint: string, method: RequestMethod = 'GET', d
             Authorization: auth,
         },
         body: (method !== 'GET') ? payload : null
-        // body : payload
     });
     if(response.ok){
         const json = await response.json();
@@ -55,3 +54,12 @@ export const createForm = (form: Form) => {
 export const listForms = (pageParams: PaginationParams) => {
     return request('forms/', 'GET', pageParams);
 }
+
+export const fetchFormData = (formID: number) => {
+    return request(`forms/${formID}/`, "GET");
+  };
+  
+  export const fetchFormFields = (formID: number) => {
+    return request(`forms/${formID}/fields/`, "GET");
+  };
+   

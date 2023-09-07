@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "raviger";
 import { getLocalForms, saveFormData } from "../utils/storageUtils";
-import { formReducer } from "../reducers/formReducer";
+import { FormAction, formReducer } from "../reducers/formReducer";
 import { NewFieldReducer } from "../reducers/fieldReducer";
 import { ErrorPage } from "./ErrorPage";
+import {  fetchFormData, fetchFormFields } from "../utils/apiUtils";
+import { formField } from "../types/formTypes";
 
 const initialState = (formID: number) => {
   const form = getFormByID(formID);
@@ -20,6 +22,23 @@ const getFormByID = (id: number) => {
   const localForms = getLocalForms("formData");
   const currentForm = localForms.find((form) => form.id === id);
   return currentForm;
+};
+
+const fetchForm = (formID: number, dispatch: React.Dispatch<FormAction>) => {
+  fetchFormData(formID).then((data) => {
+    dispatch({
+      type: "set_form_data",
+      id: formID,
+      title: data.title,
+      description: data.description,
+    });
+  });
+  fetchFormFields(formID).then((data) => {
+    dispatch({
+      type: "set_fields",
+      fields: data.results,
+    });
+  });
 };
 
 export default function Form(props: { formId: number }) {
@@ -51,9 +70,15 @@ export default function Form(props: { formId: number }) {
     };
   }, [state]);
 
-  if (!state || state.id === 404) {
-    return <ErrorPage />;
-  }
+  // if (!state || state.id === 404) {
+  //   return <ErrorPage />;
+  // }
+
+  useEffect(() => {
+    fetchForm(props.formId, dispatch);
+    titleRef.current?.focus();
+  }, []);
+
 
 
   return (
