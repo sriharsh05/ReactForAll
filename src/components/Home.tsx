@@ -1,86 +1,152 @@
 import React, { useEffect, useState } from "react";
-import { navigate, useQueryParams } from "raviger";
-import { ListForms } from "./ListForms";
-import {initialFormFields, getLocalForms, saveLocalForms } from "../utils/storageUtils";
-import { Form, formData } from "../types/formTypes";
-import { listForms } from "../utils/apiUtils";
-import { Pagination } from "../types/common";
+import { Link, useQueryParams } from "raviger";
+import { formData } from "../types/formTypes";
+import CreateForm from "./CreateForm";
+import { deleteForm, listForms } from "../utils/apiUtils";
+import Modal from "./common/modal";
 
-const getAllForms = () => {
-  const localForms = getLocalForms("formData");
-  return localForms.map((form) => {
-    return {
-      id: form.id,
-      title: form.title,
-      formFields: form.formFields
-    };
-  });
+const fetchForms = (
+  setFormsCB: (value: formData[]) => void,
+  setCountCB: (count: number) => void,
+  offset: number,
+  limit: number
+) => {
+  listForms({ offset: offset, limit: limit })
+    .then((data) => {
+      setCountCB(data.count);
+      setFormsCB(data.results);
+    })
+    .catch((error) => console.log(error));
 };
 
-const fetchForms = async (setStateCB: (value: Form[]) => void) => {
-  try{
-    const data: Pagination<Form> = await listForms({ offset:0, limit:2 });
-    setStateCB(data.results);
-  }catch(error){
-    console.log(error);
-  }
-}
-
 export function Home() {
-  const [state, setState] = useState<Form[]>(() => getAllForms());
   const [{ search }, setQuery] = useQueryParams();
   const [searchString, setSearchString] = useState("");
+  const [forms, setForms] = useState<formData[]>([]);
+  const [openForm, setOpenForm] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [count, setCount] = useState(0);
+  const limit = 3;
 
-  useEffect(() => {
-    fetchForms(setState);
-  }, []);
-
-  const addForm = () => {
-    const localForms = getLocalForms("formData");
-    const formID = Number(new Date());
-    const newForm = {
-      id: formID,
-      title: "Untitled Form",
-      formFields: initialFormFields,
-    };
-    saveLocalForms("formData", [...localForms, newForm]);
-    setState(getAllForms());
-    navigate("/forms/" + formID);
+  const deleteLocalForm = (id: number) => {
+    setForms((form) => form.filter((form) => form.id !== id));
+    deleteForm(id).then(() => fetchForms(setForms, setCount, offset, limit));
   };
 
-  const removeForm = (id: number) => {
-    const localForms = getLocalForms("formData");
-    const newLocalForms = localForms.filter((form) => form.id !== id);
-    saveLocalForms("formData", newLocalForms);
-    setState(getAllForms());
-  };
+  useEffect(() => fetchForms(setForms, setCount, offset, limit), [offset]);
 
   return (
     <div className="flex flex-col justify-center">
-      <div className="flex">
       <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setQuery({ search: searchString });
-          }}
-        >
-          <label className="mr-2">Search</label>
-          <input
-            className="border-2 border-gray-300 bg-white h-10 px-5 pr-1 rounded-lg text-m focus:outline-none m-2"
-            type="search"
-            name="search"
-            value={searchString}
-            onChange={(e) => setSearchString(e.target.value)}
-          />
-        </form>
-      </div>
+        onSubmit={(e) => {
+          e.preventDefault();
+          setQuery({ search: searchString });
+        }}
+      >
+        <div className="w-full">
+            <input
+              type="text"
+              id={"search"}
+              value={searchString}
+              name="search"
+              placeholder="Search"
+              onChange={(event) => setSearchString(event.target.value)}
+              className="border-2 border-gray-400 focus:border-gray-600 bg-white h-10 px-5 pr-1 rounded-lg text-m focus:outline-none m-2"
+            />
+            <button
+              type="submit"
+              className="bg-sky-500 hover:bg-sky-700 text-white font-bold px-2 py-1 my-4 rounded-lg"
+            >
+              <span className="ml-2 font-semibold">Search</span>
+            </button>
+        </div>
+      </form>
+      <div className="flex gap-2  mt-4 justify-between items-center">
+        <h1 className="font-bold text-2xl">Forms</h1>
 
-      <ListForms
-        localForms={state}
-        addFormCB={addForm} 
-        removeFormCB={removeForm}
-        search={search}
-      />
+
+      <button
+          className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-2 m-4 rounded-lg"
+          onClick={() => setOpenForm(true)}
+        >
+          Create Form
+        </button> 
+        </div>
+      {forms.length > 0 && (
+        <div className="flex-col flex justify-center items-center">
+          {forms
+            .filter((form) =>
+              form.title.toLowerCase().includes(search?.toLowerCase() || "")
+            )
+            .map((form) => (
+              <div className="flex w-full my-2 bg-sky-200 border rounded-lg border-gray-600 " key={form.id}>
+                <div className="flex flex-col w-full">
+                <h2 className="flex font-medium text-lg px-2">{form.title}</h2>
+                <h2 className="flex px-2">{form.description}</h2>
+                </div>
+                <Link
+                  href={`/forms/${form.id}`}
+                  className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+                >
+                  Edit
+                </Link>
+                <Link
+                  href={`/preview/${form.id}`}
+                  className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+                >
+                  Preview
+                </Link>
+                <button
+                  onClick={() => deleteLocalForm(form.id)}
+                  className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+        <div className="w-full pt-4 rounded-none border min-w-0 text-sm p-2.5 bg-sky-200 border-gray-600 placeholder-gray-400 text-gray-900 focus:ring-gray-500 focus:border-gray-500">
+            <div className="flex">
+              <button
+                onClick={() => {
+                  setOffset((offset) => {
+                    return offset - limit >= 0 ? offset - limit : offset;
+                  });
+                }}
+                className="bg-sky-500 hover:bg-sky-700 text-white font-bold px-2 py-1 rounded-lg"
+              >
+                <span className="font-semibold">Prev</span>
+              </button>
+              <div className="w-full text-sm bg-sky-200 text-gray-900">
+                <p className="text-gray-700 text-center">
+                  Showing <span className="font-medium">{offset + 1}</span> to{" "}
+                  <span className="font-medium">
+                    {offset + limit < count ? offset + limit : count}
+                  </span>{" "}
+                  of <span className="font-medium">{count}</span> results
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setOffset((offset) => {
+                    return offset + limit < count ? offset + limit : offset;
+                  });
+                }}
+                className="bg-sky-500 hover:bg-sky-700 text-white font-bold px-2 py-1 rounded-lg"
+              >
+                <p className="font-semibold">Next</p>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      )}
+      {forms.length === 0 && (
+        <p className="text-gray-700 mt-2">There are no forms created!</p>
+      )}
+      <Modal Open={openForm} closeCB={() => setOpenForm(false)}>
+        <CreateForm/>
+      </Modal>
     </div>
   );
 }
+

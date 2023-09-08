@@ -1,28 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "raviger";
-import { getLocalForms, saveFormData } from "../utils/storageUtils";
-import { FormAction, formReducer } from "../reducers/formReducer";
-import { NewFieldReducer } from "../reducers/fieldReducer";
-import { ErrorPage } from "./ErrorPage";
-import {  fetchFormData, fetchFormFields } from "../utils/apiUtils";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { formField } from "../types/formTypes";
-
-const initialState = (formID: number) => {
-  const form = getFormByID(formID);
-  return form
-    ? form
-    : {
-        id: 404,
-        title: "Error Form",
-        formFields: [],
-      };
-};
-
-const getFormByID = (id: number) => {
-  const localForms = getLocalForms("formData");
-  const currentForm = localForms.find((form) => form.id === id);
-  return currentForm;
-};
+import { Link, navigate } from "raviger";
+import { DropdownField } from "./formFields/DropdownField";
+import { MultiSelectField } from "./formFields/MultiSelectField";
+import { RadioButtonField } from "./formFields/RadioButtonField";
+import { TextField } from "./formFields/TextField";
+import {
+  addField,
+  fetchFormData,
+  fetchFormFields,
+} from "../utils/apiUtils";
+import { FormAction, formReducer } from "../reducers/formReducer";
 
 const fetchForm = (formID: number, dispatch: React.Dispatch<FormAction>) => {
   fetchFormData(formID).then((data) => {
@@ -41,168 +29,305 @@ const fetchForm = (formID: number, dispatch: React.Dispatch<FormAction>) => {
   });
 };
 
-export default function Form(props: { formId: number }) {
-  const [state, dispatch] = React.useReducer(formReducer, null,() => initialState(props.formId));
-  const [newField, dispatchField] = React.useReducer(
-		NewFieldReducer,{
-    label: "",
-    kind: "",
-    type: "text",
-    options: "" 
+export default function Form(props: { id: number }) {
+  const [fieldState, dispatch] = useReducer(formReducer, {
+    id: props.id,
+    title: "",
+    formFields: [],
   });
-  
+  const [newLabel, setNewLabel] = useState("");
+  const [kind, setKind] = useState<formField["kind"]>("TEXT");
+  const [error, setError] = useState("");
   const titleRef = useRef<HTMLInputElement>(null);
+
+  const addFormField = (
+    formID: number,
+    label: string,
+    kind: formField["kind"]
+  ) => {
+    addField(formID, {
+      label: label,
+      kind: kind,
+      ...(kind === "TEXT" && {
+        meta: {
+          description: {
+            fieldType: "text",
+          },
+        },
+      }),
+      ...((kind === "DROPDOWN" || kind === "GENERIC" || kind === "RADIO") && {
+        options: [],
+      }),
+    }).then((data) =>
+      dispatch({
+        type: "add_field",
+        label: newLabel,
+        kind: kind,
+        newField: data,
+      })
+    );
+  };
+
   useEffect(() => {
-    console.log("Component Mounted");
-    document.title = "Form Editor";
+    fetchForm(props.id, dispatch);
     titleRef.current?.focus();
-    return () => {
-      document.title = "React App";
-    };
   }, []);
 
   useEffect(() => {
-    let timeout = setTimeout(() => {
-      saveFormData("formData", state);
-    }, 500);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [state]);
-
-  // if (!state || state.id === 404) {
-  //   return <ErrorPage />;
-  // }
-
-  useEffect(() => {
-    fetchForm(props.formId, dispatch);
-    titleRef.current?.focus();
-  }, []);
-
-
+    fieldState.id !== props.id && navigate(`/form/${fieldState.id}`);
+  }, [fieldState.id]);
 
   return (
     <div>
-      <div className="border-gray-500 p-4">
-        <div>
+      <div className="border-gray-400 p-4">
+        <div className="flex flex-col mt-2">
+          <span className="font-semibold text-md">
+            Title
+          </span>
           <input
             type="text"
-            className="border-2 border-gray-300 rounded-lg p-2 my-2 flex-1"
-            value={state.title}
-            onChange={(e) => dispatch({ 
-              type: "update_title",
-               title: e.target.value 
-              }
-              )}
+            id="form-title"
             ref={titleRef}
+            value={fieldState.title}
+            onChange={(e) =>
+              dispatch({ type: "update_title", title: e.target.value })
+            }
+            className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
+            placeholder="Form title"
           />
         </div>
-        {state.formFields.map((field) => (
-          <div key={field.id} className="w-full">
-            <span className="text-lg font-semibold px-2">{field.label}</span>
-            <div className="flex gap-4">
-              <input
-                id={field.id.toString()}
-                value={field.value}
-                className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-                onChange={(e) =>
-									dispatch({
-										type: "update_label",
-										id: (field.id).toString(),
-										value: e.target.value,
-									})
-								}
-                placeholder={field.label}
-              />
-              {(field.kind === "dropdown" ||
-                field.kind === "radio" ||
-                field.kind === "multi-select") && (
-                <input
-                  id={(field.id+1).toString()}
-                  value={field.options.join(",")}
-                  className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-                  placeholder="Enter options seperated by commas(,)"
-                  onChange={(e) =>
-										dispatch({
-											type: "update_options",
-											id: (field.id).toString(),
-											options: e.target.value,
-										})
-									}
-                />
-              )}
-              <button
-                type="button"
-                onClick={() =>
-                  dispatch({
-                    type: "remove_field",
-                    id: field.id,
-                  })
-                }
-                className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-              >
-                Remove
-              </button>
+      </div>
+
+      {fieldState.formFields && (
+        <div>
+          {fieldState.formFields.length > 0 ? (
+            <div className="flex flex-col">
+              {
+                fieldState.formFields.map((field) => {
+                  switch (field.kind) {
+                    case "TEXT":
+                      return (
+                        <div className="my-1" key={field.id}>
+                          <h3 className="text-md font-semibold">Text Field</h3>
+                          {field.label === "" && (
+                            <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                              Label cannot be empty.
+                            </div>
+                          )}
+                          <TextField
+                            key={field.id}
+                            id={field.id}
+                            label={field.label}
+                            value={field.value}
+                            updateLabelCB={(id, value) => {
+                              if (value !== field.label)
+                                dispatch({
+                                  type: "update_label",
+                                  id: String(id),
+                                  value: value,
+                                });
+                            }}
+                            removeFieldCB={(id) =>
+                              dispatch({
+                                type: "remove_field",
+                                id: id,
+                              })
+                            }
+                          />
+                        </div>
+                      );
+                      case "RADIO":
+                        return (
+                          <div className="my-1" key={field.id}>
+                            <h3 className="font-semibold text-md">
+                              Radio button
+                            </h3>
+                            {field.label === "" && (
+                              <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                                Label cannot be empty.
+                              </div>
+                            )}
+                            <RadioButtonField
+                              id={field.id}
+                              label={field.label}
+                              value={field.value}
+                              options={field.options}
+                              updateOptionsCB={(id, options) => {
+                                if (options !== field.options)
+                                  dispatch({
+                                    type: "update_options",
+                                    id: String(id),
+                                    options: options,
+                                  });
+                              }}
+                              updateLabelCB={(id, value) => {
+                                if (value !== field.label)
+                                  dispatch({
+                                    type: "update_label",
+                                    id: String(id),
+                                    value: value,
+                                  });
+                              }}
+                              removeFieldCB={(id) =>
+                                dispatch({
+                                  type: "remove_field",
+                                  id: id,
+                                })
+                              }
+                            />
+                          </div>
+                        );  
+                    case "DROPDOWN":
+                      return (
+                        <div className="my-1" key={field.id}>
+                          <h3 className="text-md font-semibold">Dropdown</h3>
+                          {field.label === "" && (
+                            <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                              Label cannot be empty.
+                            </div>
+                          )}
+                          <DropdownField
+                            id={field.id}
+                            label={field.label}
+                            value={field.value}
+                            options={field.options}
+                            updateOptionsCB={(id, options) => {
+                              if (options !== field.options)
+                                dispatch({
+                                  type: "update_options",
+                                  id: String(id),
+                                  options: options,
+                                });
+                            }}
+                            updateLabelCB={(id, value) => {
+                              if (value !== field.label)
+                                dispatch({
+                                  type: "update_label",
+                                  id: String(id),
+                                  value: value,
+                                });
+                            }}
+                            removeFieldCB={(id) =>
+                              dispatch({
+                                type: "remove_field",
+                                id: id,
+                              })
+                            }
+                          />
+                        </div>
+                      );
+                      case "GENERIC":
+                      return (
+                        <div className="my-1" key={field.id}>
+                          <h3 className=" font-semibold text-md">Multiselect</h3>
+                          {field.label === "" && (
+                            <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                              Label cannot be empty.
+                            </div>
+                          )}
+                          <MultiSelectField
+                            id={field.id}
+                            label={field.label}
+                            value={field.value}
+                            options={field.options}
+                            updateOptionsCB={(id, options) => {
+                              if (options !== field.options)
+                                dispatch({
+                                  type: "update_options",
+                                  id: String(id),
+                                  options: options,
+                                });
+                            }}
+                            updateLabelCB={(id, value) => {
+                              if (value !== field.label)
+                                dispatch({
+                                  type: "update_label",
+                                  id: String(id),
+                                  value: value,
+                                });
+                            }}
+                            removeFieldCB={(id) =>
+                              dispatch({
+                                type: "remove_field",
+                                id: id,
+                              })
+                            }
+                          />
+                        </div>
+                      );
+                  }
+                })
+              }
             </div>
+          ) : (
+            <div>
+              <h4 className="font-semibold text-xl m-1">
+                There are no fields currently
+              </h4>
+            </div>
+          )}
+        </div>
+      )}
+      <div className="w-full pt-2">
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative">
+            {error}
           </div>
-        ))}
-        <div className="flex gap-2 ">
+        )}
+        <div className="flex mt-2 w-full">
           <input
             type="text"
+            id="add-field"
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
             className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-            value={newField.label}
-            onChange={(e) =>
-              dispatchField({
-                type: "update_label",
-                value: e.target.value,
-              })
-            }
+            placeholder="Enter field name"
           />
-          <select
+           <select
+            value={kind}
+            onChange={(e) => {
+              setKind(e.target.value as formField["kind"]);
+            }}
             className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
-            onChange={(e) =>
-              dispatchField({
-                 type: "update_kind", 
-                 value: e.target.value 
-                })
-            }
-            value = {newField.type}
           >
-            <option disabled value="">
-								Select  kind
-						</option>
-            <option value="text">Text</option>
-            <option value="dropdown">Dropdown</option>
-            <option value="radio">Radio</option>
-            <option value="multiselect">MultiSelect</option>
+            <option value="TEXT">
+              Text Field
+            </option>
+            <option value="DROPDOWN">
+              Dropdown
+            </option>
+            <option value="RADIO">
+              Radio button
+            </option>
+            <option value="GENERIC">
+              Multi-Select
+            </option>
           </select>
           <button
+            onClick={(_) => {
+              if (newLabel === "") {
+                return setError("Label cannot be empty");
+              }
+              setError("");
+              setKind("TEXT");
+              setNewLabel("");
+              addFormField(fieldState.id, newLabel, kind);
+            }}
             className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-            onClick={(_) =>
-              dispatch({
-                type: "add_field",
-                label: newField.label,
-                kind: newField.type,
-                callback: () => {
-                  dispatchField({
-                    type: "clear_field",
-                  });
-                },
-              })
-            }
           >
-            Add field
+            <span className="ml-2 font-semibold">Add field</span>
           </button>
         </div>
-        <div className="flex gap-4">
-          <Link
-            className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
-            href="/"
-          >
-            Close Form
-          </Link>
-        </div>
+      </div>
+      <div className="flex gap-4 mt-2">
+        <Link
+          href="/"
+          className="w-full text-center rounded-lg bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-l"
+        >
+          Close Form
+        </Link>
       </div>
     </div>
   );
 }
+

@@ -1,11 +1,11 @@
-import { formData, formField } from "../types/formTypes";
-import { createFormField } from "../utils/formFields";
+import { fieldOption, formData, formField } from "../types/formTypes";
+import { deleteField, updateField, updateForm } from "../utils/apiUtils";
 
 type AddAction = {
   type: "add_field";
-  kind: string;
+  kind: formField["kind"];
+  newField: formField;
   label: string;
-  callback: () => void;
 };
 
 type RemoveAction = {
@@ -27,7 +27,7 @@ type UpdateLabelAction = {
 type UpdateOptionsAction = {
   type: "update_options";
   id: string;
-  options: string;
+  options: fieldOption[];
 };
 
 type SetFields = {
@@ -54,24 +54,20 @@ export type FormAction =
 export const formReducer = (state: formData, action: FormAction): formData => {
   switch (action.type) {
     case "add_field": {
-      const { kind, label } = action;
-
-      if (createFormField(kind, label)) {
-        const newField = createFormField(kind, label);
-        action.callback();
-        return {
-          ...state,
-          formFields: [...state.formFields, newField],
-        };
-      }
-      return state;
+      return {
+        ...state,
+        formFields: [...state.formFields, action.newField],
+      };
     }
+
     case "remove_field": {
+      deleteField(state.id, action.id);
       return {
         ...state,
         formFields: state.formFields.filter((field) => field.id !== action.id),
       };
     }
+
     case "update_title": {
       return {
         ...state,
@@ -92,17 +88,29 @@ export const formReducer = (state: formData, action: FormAction): formData => {
     }
 
     case "update_options": {
-      const { id, options } = action;
-      const fieldOptions = options.split(",");
+      const validatedOptions = action.options
+        ? action.options.filter((opt) => opt.option !== "")
+        : [];
+
+      updateField(state.id,Number(action.id), { options: validatedOptions });
       return {
         ...state,
         formFields: state.formFields.map((field) => {
-          if (field.id === Number(id))
-            return { ...field, options: fieldOptions };
+          if (
+            action.id === String(field.id) &&
+            (field.kind === "RADIO" ||
+              field.kind === "DROPDOWN" ||
+              field.kind === "GENERIC")
+          ) {
+            return {
+              ...field,
+              options: validatedOptions,
+            };
+          }
           return field;
         }),
       };
-    }
+    } 
 
     case "set_fields": {
       return {
@@ -110,6 +118,7 @@ export const formReducer = (state: formData, action: FormAction): formData => {
         formFields: action.fields,
       };
     }
+
     case "set_form_data": {
       return {
         ...state,

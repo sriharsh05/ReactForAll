@@ -1,5 +1,5 @@
 import { PaginationParams } from "../types/common";
-import { Form, formField } from "../types/formTypes";
+import { Form, fieldOption, formField } from "../types/formTypes";
 
 const API_BASE_URL = "https://tsapi.coronasafe.live/api/";
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'
@@ -32,8 +32,12 @@ export const request = async (endpoint: string, method: RequestMethod = 'GET', d
         body: (method !== 'GET') ? payload : null
     });
     if(response.ok){
+      try {
         const json = await response.json();
         return json;
+    } catch (error) {
+        return null; 
+    }
     }else{
         const errorJson = await response.json();
         throw Error(errorJson);
@@ -55,6 +59,17 @@ export const listForms = (pageParams: PaginationParams) => {
     return request('forms/', 'GET', pageParams);
 }
 
+export const deleteForm = (formID: number) => {
+  return request(`forms/${formID}/`, "DELETE");
+};
+
+export const updateForm = (
+  formID: number,
+  formParam: { title?: string; description?: string }
+) => {
+  return request(`forms/${formID}/`, "PATCH", formParam);
+};
+
 export const fetchFormData = (formID: number) => {
     return request(`forms/${formID}/`, "GET");
   };
@@ -63,3 +78,31 @@ export const fetchFormData = (formID: number) => {
     return request(`forms/${formID}/fields/`, "GET");
   };
    
+  export const addField = (
+    formID: number,
+    fieldParams: {
+      label: string;
+      kind: formField["kind"];
+      options?: [];
+      meta?: { description: { fieldType: "text" } };
+    }
+  ) => {
+    return request(`forms/${formID}/fields/`, "POST", fieldParams);
+  };  
+
+  export const deleteField = (formID: number, fieldID: number) => {
+    return request(`forms/${formID}/fields/${fieldID}/`, "DELETE");
+  };
+
+
+  export const updateField = (
+    formID: number,
+    fieldID: number,
+    fieldParam: {
+      label?: string;
+      options?: fieldOption[];
+      meta?: { description: { fieldType: "text" } };
+    }
+  ) => {
+    return request(`forms/${formID}/fields/${fieldID}/`, "PATCH", fieldParam);
+  };

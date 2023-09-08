@@ -18,12 +18,6 @@ const Login = () => {
 		}
 	};
 
-	React.useEffect(() => {
-		const token = localStorage.getItem("token");
-		if (token) {
-			navigate("/");
-		}
-	}, []);
 
 	return (
 		<div className="w-full max-w-lg divide-y divide-gray-200">
