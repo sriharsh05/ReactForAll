@@ -30,7 +30,7 @@ type DropdownField = {
   value: string
 }
 
-type MultiSelectionField = {
+export type MultiSelectionField = {
   kind: "GENERIC"
   id: number
   label:string
@@ -63,6 +63,16 @@ export type previewForm = {
 export type fieldOption = {
   id: number;
   option: string;
+};
+
+export type previewQuestion = {
+  currentIndex: number;
+  currentQuestion: formField;
+};
+
+export type fieldAnswer = {
+  form_field: number;
+  value: string;
 };
 
 export const validateForm = (form: Form) => {

@@ -1,7 +1,7 @@
 import { Redirect, useRoutes } from "raviger";
 import About from "../components/About";
 import Form from "../components/Form";
-import PreviewPage from "../components/PreviewPage";
+import { PreviewPage } from "../components/preview/PreviewPage";
 import { ErrorPage } from "../components/ErrorPage";
 import { Home } from "../components/Home";
 
@@ -11,7 +11,7 @@ import { Home } from "../components/Home";
     "/login": () => <Redirect to="/" />,
     "/about": () => <About />,
     "/forms/:id": ({ id }: { id: string }) => <Form id={Number(id)} />,
-    // "/preview/:id": ({ id }: { id: string }) => <PreviewForm id={Number(id)} />,
+    "/preview/:id": ({ id }: { id: string }) => <PreviewPage id={Number(id)} />,
   };
    export default function AppRouter() {
    const routeResult = useRoutes(routes) || <ErrorPage />;

@@ -1,5 +1,5 @@
 import { PaginationParams } from "../types/common";
-import { Form, fieldOption, formField } from "../types/formTypes";
+import { Form, fieldAnswer, fieldOption, formField } from "../types/formTypes";
 
 const API_BASE_URL = "https://tsapi.coronasafe.live/api/";
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'
@@ -94,7 +94,6 @@ export const fetchFormData = (formID: number) => {
     return request(`forms/${formID}/fields/${fieldID}/`, "DELETE");
   };
 
-
   export const updateField = (
     formID: number,
     fieldID: number,
@@ -105,4 +104,11 @@ export const fetchFormData = (formID: number) => {
     }
   ) => {
     return request(`forms/${formID}/fields/${fieldID}/`, "PATCH", fieldParam);
+  };
+
+  export const submitForm = (
+    formID: number,
+    answers: { answers: fieldAnswer[] }
+  ) => {
+    return request(`forms/${formID}/submission/`, "POST", answers);
   };
