@@ -23,9 +23,11 @@ export function DropdownField(props: {
 
   const updateOption = (id: number, newOption: string) => {
     setOptions(
-      options.map((option) => (option.id === id ? { ...option, option: newOption } : option))
+      options.map((option) =>
+        option.id === id ? { ...option, option: newOption } : option
+      )
     );
-  };  
+  };
 
   const removeOption = (id: number) => {
     setOptions(options.filter((option) => option.id !== id));
@@ -64,7 +66,7 @@ export function DropdownField(props: {
           onClick={() => props.removeFieldCB(props.id)}
           className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 m-4 rounded-lg"
         >
-            Remove
+          Remove
         </button>
       </div>
       <div className="flex flex-col w-[75%]">
@@ -77,7 +79,7 @@ export function DropdownField(props: {
               onClick={() => addOption()}
               className="inline-flex items-center px-2 py-1 h-fit text-sm bg-sky-500 hover:bg-sky-700 text-white font-bold  rounded-md"
             >
-             Add option
+              Add option
             </button>
           </div>
 
@@ -88,9 +90,7 @@ export function DropdownField(props: {
                   <input
                     type="text"
                     value={option.option}
-                    onChange={(e) =>
-                      updateOption(option.id, e.target.value)
-                    }
+                    onChange={(e) => updateOption(option.id, e.target.value)}
                     className="rounded-md border block flex-1 min-w-0 w-full text-sm p-1 bg-sky-100 border-sky-500 placeholder-sky-400 text-gray-900 focus:border-gray-500"
                     placeholder="Enter a option"
                   />

@@ -5,11 +5,7 @@ import { DropdownField } from "./formFields/DropdownField";
 import { MultiSelectField } from "./formFields/MultiSelectField";
 import { RadioButtonField } from "./formFields/RadioButtonField";
 import { TextField } from "./formFields/TextField";
-import {
-  addField,
-  fetchFormData,
-  fetchFormFields,
-} from "../utils/apiUtils";
+import { addField, fetchFormData, fetchFormFields } from "../utils/apiUtils";
 import { FormAction, formReducer } from "../reducers/formReducer";
 
 const fetchForm = (formID: number, dispatch: React.Dispatch<FormAction>) => {
@@ -81,9 +77,7 @@ export default function Form(props: { id: number }) {
     <div>
       <div className="border-gray-400 p-4">
         <div className="flex flex-col mt-2">
-          <span className="font-semibold text-md">
-            Title
-          </span>
+          <span className="font-semibold text-md">Title</span>
           <input
             type="text"
             id="form-title"
@@ -102,162 +96,158 @@ export default function Form(props: { id: number }) {
         <div>
           {fieldState.formFields.length > 0 ? (
             <div className="flex flex-col">
-              {
-                fieldState.formFields.map((field) => {
-                  switch (field.kind) {
-                    case "TEXT":
-                      return (
-                        <div className="my-1" key={field.id}>
-                          <h3 className="text-md font-semibold">Text Field</h3>
-                          {field.label === "" && (
-                            <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
-                              Label cannot be empty.
-                            </div>
-                          )}
-                          <TextField
-                            key={field.id}
-                            id={field.id}
-                            label={field.label}
-                            value={field.value}
-                            updateLabelCB={(id, value) => {
-                              if (value !== field.label)
-                                dispatch({
-                                  type: "update_label",
-                                  id: String(id),
-                                  value: value,
-                                });
-                            }}
-                            removeFieldCB={(id) =>
-                              dispatch({
-                                type: "remove_field",
-                                id: id,
-                              })
-                            }
-                          />
-                        </div>
-                      );
-                      case "RADIO":
-                        return (
-                          <div className="my-1" key={field.id}>
-                            <h3 className="font-semibold text-md">
-                              Radio button
-                            </h3>
-                            {field.label === "" && (
-                              <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
-                                Label cannot be empty.
-                              </div>
-                            )}
-                            <RadioButtonField
-                              id={field.id}
-                              label={field.label}
-                              value={field.value}
-                              options={field.options}
-                              updateOptionsCB={(id, options) => {
-                                if (options !== field.options)
-                                  dispatch({
-                                    type: "update_options",
-                                    id: String(id),
-                                    options: options,
-                                  });
-                              }}
-                              updateLabelCB={(id, value) => {
-                                if (value !== field.label)
-                                  dispatch({
-                                    type: "update_label",
-                                    id: String(id),
-                                    value: value,
-                                  });
-                              }}
-                              removeFieldCB={(id) =>
-                                dispatch({
-                                  type: "remove_field",
-                                  id: id,
-                                })
-                              }
-                            />
+              {fieldState.formFields.map((field) => {
+                switch (field.kind) {
+                  case "TEXT":
+                    return (
+                      <div className="my-1" key={field.id}>
+                        <h3 className="text-md font-semibold">Text Field</h3>
+                        {field.label === "" && (
+                          <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                            Label cannot be empty.
                           </div>
-                        );  
-                    case "DROPDOWN":
-                      return (
-                        <div className="my-1" key={field.id}>
-                          <h3 className="text-md font-semibold">Dropdown</h3>
-                          {field.label === "" && (
-                            <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
-                              Label cannot be empty.
-                            </div>
-                          )}
-                          <DropdownField
-                            id={field.id}
-                            label={field.label}
-                            value={field.value}
-                            options={field.options}
-                            updateOptionsCB={(id, options) => {
-                              if (options !== field.options)
-                                dispatch({
-                                  type: "update_options",
-                                  id: String(id),
-                                  options: options,
-                                });
-                            }}
-                            updateLabelCB={(id, value) => {
-                              if (value !== field.label)
-                                dispatch({
-                                  type: "update_label",
-                                  id: String(id),
-                                  value: value,
-                                });
-                            }}
-                            removeFieldCB={(id) =>
+                        )}
+                        <TextField
+                          key={field.id}
+                          id={field.id}
+                          label={field.label}
+                          value={field.value}
+                          updateLabelCB={(id, value) => {
+                            if (value !== field.label)
                               dispatch({
-                                type: "remove_field",
-                                id: id,
-                              })
-                            }
-                          />
-                        </div>
-                      );
-                      case "GENERIC":
-                      return (
-                        <div className="my-1" key={field.id}>
-                          <h3 className=" font-semibold text-md">Multiselect</h3>
-                          {field.label === "" && (
-                            <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
-                              Label cannot be empty.
-                            </div>
-                          )}
-                          <MultiSelectField
-                            id={field.id}
-                            label={field.label}
-                            value={field.value}
-                            options={field.options}
-                            updateOptionsCB={(id, options) => {
-                              if (options !== field.options)
-                                dispatch({
-                                  type: "update_options",
-                                  id: String(id),
-                                  options: options,
-                                });
-                            }}
-                            updateLabelCB={(id, value) => {
-                              if (value !== field.label)
-                                dispatch({
-                                  type: "update_label",
-                                  id: String(id),
-                                  value: value,
-                                });
-                            }}
-                            removeFieldCB={(id) =>
+                                type: "update_label",
+                                id: String(id),
+                                value: value,
+                              });
+                          }}
+                          removeFieldCB={(id) =>
+                            dispatch({
+                              type: "remove_field",
+                              id: id,
+                            })
+                          }
+                        />
+                      </div>
+                    );
+                  case "RADIO":
+                    return (
+                      <div className="my-1" key={field.id}>
+                        <h3 className="font-semibold text-md">Radio button</h3>
+                        {field.label === "" && (
+                          <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                            Label cannot be empty.
+                          </div>
+                        )}
+                        <RadioButtonField
+                          id={field.id}
+                          label={field.label}
+                          value={field.value}
+                          options={field.options}
+                          updateOptionsCB={(id, options) => {
+                            if (options !== field.options)
                               dispatch({
-                                type: "remove_field",
-                                id: id,
-                              })
-                            }
-                          />
-                        </div>
-                      );
-                  }
-                })
-              }
+                                type: "update_options",
+                                id: String(id),
+                                options: options,
+                              });
+                          }}
+                          updateLabelCB={(id, value) => {
+                            if (value !== field.label)
+                              dispatch({
+                                type: "update_label",
+                                id: String(id),
+                                value: value,
+                              });
+                          }}
+                          removeFieldCB={(id) =>
+                            dispatch({
+                              type: "remove_field",
+                              id: id,
+                            })
+                          }
+                        />
+                      </div>
+                    );
+                  case "DROPDOWN":
+                    return (
+                      <div className="my-1" key={field.id}>
+                        <h3 className="text-md font-semibold">Dropdown</h3>
+                        {field.label === "" && (
+                          <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                            Label cannot be empty.
+                          </div>
+                        )}
+                        <DropdownField
+                          id={field.id}
+                          label={field.label}
+                          value={field.value}
+                          options={field.options}
+                          updateOptionsCB={(id, options) => {
+                            if (options !== field.options)
+                              dispatch({
+                                type: "update_options",
+                                id: String(id),
+                                options: options,
+                              });
+                          }}
+                          updateLabelCB={(id, value) => {
+                            if (value !== field.label)
+                              dispatch({
+                                type: "update_label",
+                                id: String(id),
+                                value: value,
+                              });
+                          }}
+                          removeFieldCB={(id) =>
+                            dispatch({
+                              type: "remove_field",
+                              id: id,
+                            })
+                          }
+                        />
+                      </div>
+                    );
+                  case "GENERIC":
+                    return (
+                      <div className="my-1" key={field.id}>
+                        <h3 className=" font-semibold text-md">Multiselect</h3>
+                        {field.label === "" && (
+                          <div className="bg-red-200 my-2 border border-red-600 px-2 rounded-md text-red-600">
+                            Label cannot be empty.
+                          </div>
+                        )}
+                        <MultiSelectField
+                          id={field.id}
+                          label={field.label}
+                          value={field.value}
+                          options={field.options}
+                          updateOptionsCB={(id, options) => {
+                            if (options !== field.options)
+                              dispatch({
+                                type: "update_options",
+                                id: String(id),
+                                options: options,
+                              });
+                          }}
+                          updateLabelCB={(id, value) => {
+                            if (value !== field.label)
+                              dispatch({
+                                type: "update_label",
+                                id: String(id),
+                                value: value,
+                              });
+                          }}
+                          removeFieldCB={(id) =>
+                            dispatch({
+                              type: "remove_field",
+                              id: id,
+                            })
+                          }
+                        />
+                      </div>
+                    );
+                }
+              })}
             </div>
           ) : (
             <div>
@@ -283,25 +273,17 @@ export default function Form(props: { id: number }) {
             className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
             placeholder="Enter field name"
           />
-           <select
+          <select
             value={kind}
             onChange={(e) => {
               setKind(e.target.value as formField["kind"]);
             }}
             className="border-2 m-4 h-10 rounded-lg border-gray-300  focus:border-gray-500"
           >
-            <option value="TEXT">
-              Text Field
-            </option>
-            <option value="DROPDOWN">
-              Dropdown
-            </option>
-            <option value="RADIO">
-              Radio button
-            </option>
-            <option value="GENERIC">
-              Multi-Select
-            </option>
+            <option value="TEXT">Text Field</option>
+            <option value="DROPDOWN">Dropdown</option>
+            <option value="RADIO">Radio button</option>
+            <option value="GENERIC">Multi-Select</option>
           </select>
           <button
             onClick={(_) => {
@@ -330,4 +312,3 @@ export default function Form(props: { id: number }) {
     </div>
   );
 }
-

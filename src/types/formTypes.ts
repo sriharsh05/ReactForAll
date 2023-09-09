@@ -10,55 +10,59 @@ export type Form = {
   title: string;
   description?: string;
   is_public?: boolean;
-}
-
-export type Errors<T> = Partial<Record<keyof T,string>>
-
-type TextField = {
-  kind: "TEXT"
-  id: number
-  label:string
-  type: string
-  value: string
-}
-
-type DropdownField = {
-  kind: "DROPDOWN"
-  id: number
-  label:string
-  options: fieldOption[]
-  value: string
-}
-
-export type MultiSelectionField = {
-  kind: "GENERIC"
-  id: number
-  label:string
-  options: fieldOption[]
-  value: string
-}
-
-type RadioButtonField = {
-  kind : "RADIO"
-  id: number
-  label:string
-  options: fieldOption[]
-  value: string
-}
-
-export type initialFormField = {
-	label: string
-	kind: string
-	type: string
-	options: string
 };
 
-export type formField = TextField | DropdownField | MultiSelectionField | RadioButtonField
+export type Errors<T> = Partial<Record<keyof T, string>>;
+
+type TextField = {
+  kind: "TEXT";
+  id: number;
+  label: string;
+  type: string;
+  value: string;
+};
+
+type DropdownField = {
+  kind: "DROPDOWN";
+  id: number;
+  label: string;
+  options: fieldOption[];
+  value: string;
+};
+
+export type MultiSelectionField = {
+  kind: "GENERIC";
+  id: number;
+  label: string;
+  options: fieldOption[];
+  value: string;
+};
+
+type RadioButtonField = {
+  kind: "RADIO";
+  id: number;
+  label: string;
+  options: fieldOption[];
+  value: string;
+};
+
+export type initialFormField = {
+  label: string;
+  kind: string;
+  type: string;
+  options: string;
+};
+
+export type formField =
+  | TextField
+  | DropdownField
+  | MultiSelectionField
+  | RadioButtonField;
 
 export type previewForm = {
-  currentIndex: number
-  formAnswers: formData
-}
+  currentIndex: number;
+  formAnswers: formData;
+};
 
 export type fieldOption = {
   id: number;
@@ -76,12 +80,12 @@ export type fieldAnswer = {
 };
 
 export const validateForm = (form: Form) => {
-  const errors: Errors<Form> = {}
-  if(form.title.length < 1){
-     errors.title = "Title is required";
+  const errors: Errors<Form> = {};
+  if (form.title.length < 1) {
+    errors.title = "Title is required";
   }
-  if(form.title.length > 100){
+  if (form.title.length > 100) {
     errors.title = "Title length must be less than 100 characters";
- }
- return errors;
-}
+  }
+  return errors;
+};

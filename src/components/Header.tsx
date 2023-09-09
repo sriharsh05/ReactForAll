@@ -16,11 +16,15 @@ export default function Header(props: { title: String; currentUser: User }) {
         {[
           { page: "Home", url: "/" },
           { page: "About", url: "/about" },
-          ...(props.currentUser.username && props.currentUser?.username.length > 0
+          ...(props.currentUser.username &&
+          props.currentUser?.username.length > 0
             ? [
                 {
                   page: "Logout",
-                  onClick: () => {localStorage.removeItem("token"); window.location.reload();},
+                  onClick: () => {
+                    localStorage.removeItem("token");
+                    window.location.reload();
+                  },
                 },
               ]
             : [{ page: "Login", url: "/login" }]),
