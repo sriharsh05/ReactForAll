@@ -74,6 +74,8 @@ export function Home() {
         </div>
       {forms.length > 0 && (
         <div className="flex-col flex justify-center items-center">
+
+
           {forms
             .filter((form) =>
               form.title.toLowerCase().includes(search?.toLowerCase() || "")
@@ -104,6 +106,8 @@ export function Home() {
                 </button>
               </div>
             ))}
+
+
         <div className="w-full pt-4 rounded-none border min-w-0 text-sm p-2.5 bg-sky-200 border-gray-600 placeholder-gray-400 text-gray-900 focus:ring-gray-500 focus:border-gray-500">
             <div className="flex">
               <button

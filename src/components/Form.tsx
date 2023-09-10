@@ -11,6 +11,7 @@ import {
   fetchFormFields,
 } from "../utils/apiUtils";
 import { FormAction, formReducer } from "../reducers/formReducer";
+import ShareLink from "./ShareLink";
 
 const fetchForm = (formID: number, dispatch: React.Dispatch<FormAction>) => {
   fetchFormData(formID).then((data) => {
@@ -97,6 +98,7 @@ export default function Form(props: { id: number }) {
           />
         </div>
       </div>
+      <ShareLink formID={fieldState.id} />
 
       {fieldState.formFields && (
         <div>
