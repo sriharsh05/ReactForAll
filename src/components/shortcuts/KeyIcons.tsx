@@ -1,6 +1,9 @@
 import React from "react";
 
-export function KeyboardKeyIcon(props: { isShiftClicked: boolean; keyPressed: string }) {
+export function KeyboardKeyIcon(props: {
+  isShiftClicked: boolean;
+  keyPressed: string;
+}) {
   return (
     <div className="flex gap-2 h-fit font-bold">
       {props.isShiftClicked && (

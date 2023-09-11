@@ -36,9 +36,7 @@ export function KeyboardShortcuts() {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-bold text-gray-700">
-          Create form Page 
-        </h3>
+        <h3 className="text-xl font-bold text-gray-700">Create form Page</h3>
         <div className="flex justify-between items-center">
           <span>Cancel</span>
           <KeyboardKeyIcon isShiftClicked={false} keyPressed={"Esc"} />
@@ -49,9 +47,7 @@ export function KeyboardShortcuts() {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-bold text-gray-700">
-          Preview page
-        </h3>
+        <h3 className="text-xl font-bold text-gray-700">Preview page</h3>
         <div className="flex justify-between items-center">
           <span>Next question</span>
           <KeyboardKeyIcon isShiftClicked={false} keyPressed={">"} />

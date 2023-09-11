@@ -1,10 +1,9 @@
 import { navigate } from "raviger";
-import React, {  useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function About() {
-
   const documentRef = useRef(document);
-  const onKeyPressHandler =(event: KeyboardEvent) => {
+  const onKeyPressHandler = (event: KeyboardEvent) => {
     if (event.shiftKey === true) {
       if (event.key === "H") {
         navigate("/");
@@ -15,7 +14,7 @@ export default function About() {
       }
     }
   };
-  
+
   useEffect(() => {
     documentRef.current.addEventListener("keydown", onKeyPressHandler);
     documentRef.current.addEventListener("keyup", onKeyPressHandler);
@@ -24,7 +23,7 @@ export default function About() {
       documentRef.current.removeEventListener("keyup", onKeyPressHandler);
     };
   }, [onKeyPressHandler]);
-  
+
   return (
     <div>
       <h2>About Page</h2>
