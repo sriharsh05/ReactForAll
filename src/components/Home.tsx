@@ -4,6 +4,7 @@ import { formData } from "../types/formTypes";
 import CreateForm from "./CreateForm";
 import { deleteForm, listForms } from "../utils/apiUtils";
 import Modal from "./common/modal";
+import { DragDropContext, Draggable, DropResult, Droppable } from "react-beautiful-dnd";
 
 const fetchForms = (
   setFormsCB: (value: formData[]) => void,
@@ -34,6 +35,16 @@ export function Home() {
   };
 
   useEffect(() => fetchForms(setForms, setCount, offset, limit), [offset]);
+
+  const handleDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+    if (!destination) return;
+    if (destination.index === source.index) return; 
+    const arrayItems = Array.from(forms);
+    const [movedElement] = arrayItems.splice(source.index, 1);
+    arrayItems.splice(destination.index, 0, movedElement);
+    setForms(arrayItems);
+  };
 
   return (
     <div className="flex flex-col justify-center">
@@ -74,14 +85,35 @@ export function Home() {
         </div>
       {forms.length > 0 && (
         <div className="flex-col flex justify-center items-center">
-
+          <div>
+          <DragDropContext onDragEnd={(result) => handleDragEnd(result)}>
+          <Droppable droppableId="listForms">
+          {(provided) => (
+            <div
+              className="listForms"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
 
           {forms
             .filter((form) =>
               form.title.toLowerCase().includes(search?.toLowerCase() || "")
             )
-            .map((form) => (
-              <div className="flex w-full my-2 bg-sky-200 border rounded-lg border-gray-600 " key={form.id}>
+            .map((form,index) => (
+              <Draggable
+                    draggableId={`${index}`}
+                    index={index}
+                    key={form.id}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className=" relative z-0"
+                      >
+
+              <div className={`flex w-full my-2 bg-sky-200 border rounded-lg border-gray-600 ${snapshot.isDragging ? "border-red-400" : ""} `} key={form.id}>
                 <div className="flex flex-col w-full">
                 <h2 className="flex font-medium text-lg px-2">{form.title}</h2>
                 <h2 className="flex px-2">{form.description}</h2>
@@ -105,10 +137,18 @@ export function Home() {
                   Remove
                 </button>
               </div>
+              </div>
+                    )}
+              </Draggable>
             ))}
+            {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+  </DragDropContext>
+          </div>
 
-
-        <div className="w-full pt-4 rounded-none border min-w-0 text-sm p-2.5 bg-sky-200 border-gray-600 placeholder-gray-400 text-gray-900 focus:ring-gray-500 focus:border-gray-500">
+          <div className="w-full pt-4 rounded-none border min-w-0 text-sm p-2.5 bg-sky-200 border-gray-600 placeholder-gray-400 text-gray-900 focus:ring-gray-500 focus:border-gray-500">
             <div className="flex">
               <button
                 onClick={() => {
