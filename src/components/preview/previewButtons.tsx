@@ -1,5 +1,5 @@
 import { Link, navigate } from "raviger";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 
 export function PreviewButtons({
     currentIndex,
@@ -13,8 +13,7 @@ export function PreviewButtons({
     prevQuestion: () => void;
   }) {
      
-    const documentRef = useRef(document);
-    const onKeyPressHandler =
+    const onKeyPressHandler = useCallback(
       (event: KeyboardEvent) => {
         if (event.key === "ArrowRight") 
             nextQuestion();
@@ -25,12 +24,13 @@ export function PreviewButtons({
             prevQuestion();
           }
         }
-      };
+      },[currentIndex,nextQuestion, prevQuestion]
+      );
   
     useEffect(() => {
-      documentRef.current.addEventListener("keydown", onKeyPressHandler);
+     document.addEventListener("keydown", onKeyPressHandler);
       return () => {
-        documentRef.current.removeEventListener("keydown", onKeyPressHandler);
+       document.removeEventListener("keydown", onKeyPressHandler);
       };
     }, [onKeyPressHandler]);
 

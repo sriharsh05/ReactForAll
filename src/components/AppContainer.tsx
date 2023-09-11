@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Header from "./Header";
 import { User } from "../types/userTypes";
 import { KeyboardShortcuts } from "./shortcuts/KeyBoardShortcuts";

@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import { Errors, Form, validateForm} from "../types/formTypes"
 import { createForm } from "../utils/apiUtils";
 
-
+ 
 export default function CreateForm() {
 	const [form, setForm] = useState<Form>({
         id:Number(new Date()),
@@ -12,12 +12,6 @@ export default function CreateForm() {
 		is_public: false,
 	});
 	const [errors, setErrors] = React.useState<Errors<Form>>({});
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value} = event.target;
-        setForm({...form, [name]: value});
-    }
-
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();

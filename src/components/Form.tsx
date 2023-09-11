@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { formField } from "../types/formTypes";
 import { Link, navigate } from "raviger";
 import { DropdownField } from "./formFields/DropdownField";
@@ -71,15 +71,15 @@ export default function Form(props: { id: number }) {
 
   useEffect(() => {
     fetchForm(props.id, dispatch);
-    // titleRef.current?.focus();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fieldState.id !== props.id && navigate(`/form/${fieldState.id}`);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldState.id]);
 
-  const documentRef = useRef(document);
-  const onKeyPressHandler =(event: KeyboardEvent) => {
+  const onKeyPressHandler = useCallback((event: KeyboardEvent) => {
     if (event.shiftKey === true) {
       if (event.key === "H") {
         navigate("/");
@@ -92,14 +92,14 @@ export default function Form(props: { id: number }) {
         window.location.reload();
       }
     }
-  };
+  },[]);
 
   useEffect(() => {
-    documentRef.current.addEventListener("keydown", onKeyPressHandler);
-    documentRef.current.addEventListener("keyup", onKeyPressHandler);
+    document.addEventListener("keydown", onKeyPressHandler);
+    document.addEventListener("keyup", onKeyPressHandler);
     return () => {
-      documentRef.current.removeEventListener("keydown", onKeyPressHandler);
-      documentRef.current.removeEventListener("keyup", onKeyPressHandler);
+      document.removeEventListener("keydown", onKeyPressHandler);
+      document.removeEventListener("keyup", onKeyPressHandler);
     };
   }, [onKeyPressHandler]);
 
@@ -130,6 +130,7 @@ export default function Form(props: { id: number }) {
           {fieldState.formFields.length > 0 ? (
             <div className="flex flex-col">
               {
+                // eslint-disable-next-line
                 fieldState.formFields.map((field) => {
                   switch (field.kind) {
                     case "TEXT":

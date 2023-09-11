@@ -27,7 +27,7 @@ export function MultiSelectField({
     }
   };
 
-  const isAllSelected = () => {
+  const isAllSelected = () => { 
     return (
       currentQuestion.kind === "GENERIC" &&
       Array.isArray(currentAnswer) &&
@@ -37,6 +37,7 @@ export function MultiSelectField({
 
   useEffect(() => {
     if (!Array.isArray(currentAnswer)) setCurrentAnswerCB([]);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

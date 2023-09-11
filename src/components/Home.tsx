@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, navigate, useQueryParams } from "raviger";
 import { formData } from "../types/formTypes";
 import CreateForm from "./CreateForm";
 import { deleteForm, listForms } from "../utils/apiUtils";
 import Modal from "./common/modal";
-import { DragDropContext, Draggable, DropResult, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, DropResult, Droppable } from "react-beautiful-dnd"; 
 
 const fetchForms = (
   setFormsCB: (value: formData[]) => void,
@@ -46,8 +46,7 @@ export function Home() {
     setForms(arrayItems);
   };
 
-  const documentRef = useRef(document);
-  const onKeyPressHandler = 
+  const onKeyPressHandler = useCallback(
     (event: KeyboardEvent) => {
       if (event.shiftKey === true) {
         if (event.key === "A") {
@@ -55,7 +54,7 @@ export function Home() {
         }
         if (event.key === "S") {
           setSearchString("");
-          documentRef.current.getElementById("search")?.focus();
+          document.getElementById("search")?.focus();
         }
         if (event.key === "N") {
           setOpenForm(true);
@@ -75,14 +74,16 @@ export function Home() {
           return offset - limit >= 0 ? offset - limit : offset;
         });
       }
-    };
+    }, [count]
+    );
+  
 
   useEffect(() => {
-    documentRef.current.addEventListener("keydown", onKeyPressHandler);
-    documentRef.current.addEventListener("keyup", onKeyPressHandler);
+    document.addEventListener("keydown", onKeyPressHandler);
+    document.addEventListener("keyup", onKeyPressHandler);
     return () => {
-      documentRef.current.removeEventListener("keydown", onKeyPressHandler);
-      documentRef.current.removeEventListener("keyup", onKeyPressHandler);
+      document.removeEventListener("keydown", onKeyPressHandler);
+      document.removeEventListener("keyup", onKeyPressHandler);
     };
   }, [onKeyPressHandler]);
 

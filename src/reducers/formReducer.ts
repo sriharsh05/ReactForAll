@@ -1,5 +1,5 @@
 import { fieldOption, formData, formField } from "../types/formTypes";
-import { deleteField, updateField, updateForm } from "../utils/apiUtils";
+import { deleteField, updateField } from "../utils/apiUtils";
 
 type AddAction = {
   type: "add_field";
@@ -78,7 +78,7 @@ export const formReducer = (state: formData, action: FormAction): formData => {
     case "update_label": {
       const { id, value } = action;
       return {
-        ...state,
+        ...state, 
         formFields: state.formFields.map((field) => {
           if (field.id === Number(id))
             return { ...field, label: value, value: value };

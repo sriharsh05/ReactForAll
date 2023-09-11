@@ -65,6 +65,7 @@ export function QuestionCard({
             console.log(`Question ${idx + 1}: ${item.value}`);
       }));       
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers]);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ export function QuestionCard({
       );
     }
     ans.length > 0 && setCurrentAnswer(ans[0].value);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestion]);
 
 
