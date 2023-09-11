@@ -38,6 +38,7 @@ export function RadioButtonField(props: {
     return () => {
       clearTimeout(timeout);
     };
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [label]);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export function RadioButtonField(props: {
     return () => {
       clearTimeout(timeout);
     };
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options]);
 
   return (
