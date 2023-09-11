@@ -1,4 +1,5 @@
-import { Link } from "raviger";
+import { Link, navigate } from "raviger";
+import { useCallback, useEffect, useRef } from "react";
 
 export function PreviewButtons({
     currentIndex,
@@ -11,6 +12,28 @@ export function PreviewButtons({
     nextQuestion: () => void;
     prevQuestion: () => void;
   }) {
+     
+    const documentRef = useRef(document);
+    const onKeyPressHandler =
+      (event: KeyboardEvent) => {
+        if (event.key === "ArrowRight") 
+            nextQuestion();
+        if (event.key === "ArrowLeft") {
+          if (currentIndex === 0) {
+            navigate("/");
+          } else {
+            prevQuestion();
+          }
+        }
+      };
+  
+    useEffect(() => {
+      documentRef.current.addEventListener("keydown", onKeyPressHandler);
+      return () => {
+        documentRef.current.removeEventListener("keydown", onKeyPressHandler);
+      };
+    }, [onKeyPressHandler]);
+
     return (
       <div className="flex justify-end w-full gap-2">
         {currentIndex === 0 && (

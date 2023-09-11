@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useQueryParams } from "raviger";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, navigate, useQueryParams } from "raviger";
 import { formData } from "../types/formTypes";
 import CreateForm from "./CreateForm";
 import { deleteForm, listForms } from "../utils/apiUtils";
@@ -45,6 +45,46 @@ export function Home() {
     arrayItems.splice(destination.index, 0, movedElement);
     setForms(arrayItems);
   };
+
+  const documentRef = useRef(document);
+  const onKeyPressHandler = 
+    (event: KeyboardEvent) => {
+      if (event.shiftKey === true) {
+        if (event.key === "A") {
+          navigate("/about");
+        }
+        if (event.key === "S") {
+          setSearchString("");
+          documentRef.current.getElementById("search")?.focus();
+        }
+        if (event.key === "N") {
+          setOpenForm(true);
+        }
+        if (event.key === "L") {
+          localStorage.removeItem("token");
+          window.location.reload();
+        }
+      }
+      if (event.key === "ArrowRight") {
+        setOffset((offset) => {
+          return offset + limit < count ? offset + limit : offset;
+        });
+      }
+      if (event.key === "ArrowLeft") {
+        setOffset((offset) => {
+          return offset - limit >= 0 ? offset - limit : offset;
+        });
+      }
+    };
+
+  useEffect(() => {
+    documentRef.current.addEventListener("keydown", onKeyPressHandler);
+    documentRef.current.addEventListener("keyup", onKeyPressHandler);
+    return () => {
+      documentRef.current.removeEventListener("keydown", onKeyPressHandler);
+      documentRef.current.removeEventListener("keyup", onKeyPressHandler);
+    };
+  }, [onKeyPressHandler]);
 
   return (
     <div className="flex flex-col justify-center">

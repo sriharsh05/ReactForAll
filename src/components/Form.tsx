@@ -71,12 +71,37 @@ export default function Form(props: { id: number }) {
 
   useEffect(() => {
     fetchForm(props.id, dispatch);
-    titleRef.current?.focus();
+    // titleRef.current?.focus();
   }, []);
 
   useEffect(() => {
     fieldState.id !== props.id && navigate(`/form/${fieldState.id}`);
   }, [fieldState.id]);
+
+  const documentRef = useRef(document);
+  const onKeyPressHandler =(event: KeyboardEvent) => {
+    if (event.shiftKey === true) {
+      if (event.key === "H") {
+        navigate("/");
+      }
+      if (event.key === "A") {
+        navigate("/about");
+      }
+      if (event.key === "L") {
+        localStorage.removeItem("token");
+        window.location.reload();
+      }
+    }
+  };
+
+  useEffect(() => {
+    documentRef.current.addEventListener("keydown", onKeyPressHandler);
+    documentRef.current.addEventListener("keyup", onKeyPressHandler);
+    return () => {
+      documentRef.current.removeEventListener("keydown", onKeyPressHandler);
+      documentRef.current.removeEventListener("keyup", onKeyPressHandler);
+    };
+  }, [onKeyPressHandler]);
 
   return (
     <div>
