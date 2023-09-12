@@ -27,7 +27,7 @@ const getFormData = (
   });
 };
 
-export function PreviewPage({ id }: { id: number }) {
+export default function PreviewPage({ id }: { id: number }) {
   const [form, setForm] = useState<formData>();
   useEffect(() => getFormData(id, setForm), [id]);
   return (

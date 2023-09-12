@@ -3,6 +3,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as Sentry from "@sentry/react";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
 if (process.env.REACT_APP_SENTRY_DSN) {
   Sentry.init({
     dsn: "https://5dc624e9317f06f36bd971baeef99486@o4505862073024512.ingest.sentry.io/4505862078398464",
@@ -27,6 +29,8 @@ const root = ReactDOM.createRoot(
 root.render(
     <App/>
 );
+
+serviceWorkerRegistration.unregister();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

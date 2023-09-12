@@ -20,7 +20,7 @@ const fetchForms = (
     .catch((error) => console.log(error));
 };
 
-export function Home() {
+export default function Home() {
   const [{ search }, setQuery] = useQueryParams();
   const [searchString, setSearchString] = useState("");
   const [forms, setForms] = useState<formData[]>([]);
