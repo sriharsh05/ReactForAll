@@ -16,10 +16,10 @@ export function MultiSelectField({
     if (Array.isArray(currentAnswer)) {
       if (!currentAnswer.includes(option))
         setCurrentAnswerCB([...currentAnswer, option]);
-      else setCurrentAnswerCB(currentAnswer.filter((answer) => answer !== option));
+      else
+        setCurrentAnswerCB(currentAnswer.filter((answer) => answer !== option));
     }
   };
-
 
   const isOptionSelected = (option: string) => {
     if (Array.isArray(currentAnswer)) {
@@ -27,17 +27,19 @@ export function MultiSelectField({
     }
   };
 
-  const isAllSelected = () => { 
+  const isAllSelected = () => {
     return (
       currentQuestion.kind === "GENERIC" &&
       Array.isArray(currentAnswer) &&
-        JSON.stringify(currentQuestion.options.map((opt) => opt.option).sort()) === JSON.stringify(currentAnswer.sort()) 
+      JSON.stringify(
+        currentQuestion.options.map((opt) => opt.option).sort()
+      ) === JSON.stringify(currentAnswer.sort())
     );
   };
 
   useEffect(() => {
     if (!Array.isArray(currentAnswer)) setCurrentAnswerCB([]);
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

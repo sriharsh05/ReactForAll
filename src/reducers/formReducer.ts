@@ -78,7 +78,7 @@ export const formReducer = (state: formData, action: FormAction): formData => {
     case "update_label": {
       const { id, value } = action;
       return {
-        ...state, 
+        ...state,
         formFields: state.formFields.map((field) => {
           if (field.id === Number(id))
             return { ...field, label: value, value: value };
@@ -92,7 +92,7 @@ export const formReducer = (state: formData, action: FormAction): formData => {
         ? action.options.filter((opt) => opt.option !== "")
         : [];
 
-      updateField(state.id,Number(action.id), { options: validatedOptions });
+      updateField(state.id, Number(action.id), { options: validatedOptions });
       return {
         ...state,
         formFields: state.formFields.map((field) => {
@@ -110,7 +110,7 @@ export const formReducer = (state: formData, action: FormAction): formData => {
           return field;
         }),
       };
-    } 
+    }
 
     case "set_fields": {
       return {

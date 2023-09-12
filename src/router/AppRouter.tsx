@@ -6,8 +6,9 @@ import LoadingSpinner from "../components/LoadingSpinner";
 const Home = React.lazy(() => import("../components/Home"));
 const About = React.lazy(() => import("../components/About"));
 const Form = React.lazy(() => import("../components/Form"));
-const PreviewPage = React.lazy(() => import("../components/preview/PreviewPage"));
-
+const PreviewPage = React.lazy(
+  () => import("../components/preview/PreviewPage")
+);
 
 const routes = {
   "/": () => (

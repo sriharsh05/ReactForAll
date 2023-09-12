@@ -23,10 +23,12 @@ export function RadioButtonField(props: {
 
   const updateOption = (id: number, newOption: string) => {
     setOptions(
-      options.map((option) => (option.id === id ? { ...option, option: newOption } : option))
+      options.map((option) =>
+        option.id === id ? { ...option, option: newOption } : option
+      )
     );
   };
-  
+
   const removeOption = (id: number) => {
     setOptions(options.filter((option) => option.id !== id));
   };
@@ -38,7 +40,7 @@ export function RadioButtonField(props: {
     return () => {
       clearTimeout(timeout);
     };
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [label]);
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export function RadioButtonField(props: {
     return () => {
       clearTimeout(timeout);
     };
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options]);
 
   return (
@@ -60,7 +62,7 @@ export function RadioButtonField(props: {
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           className="border-2 justify-between items-center border-gray-300 rounded-lg p-2 my-2 flex-1"
-          placeholder= "Enter label"
+          placeholder="Enter label"
         />
         <button
           onClick={() => props.removeFieldCB(props.id)}
@@ -79,7 +81,7 @@ export function RadioButtonField(props: {
               onClick={() => addOption()}
               className="inline-flex items-center px-2 h-fit text-sm bg-sky-500 hover:bg-sky-700 text-white font-bold py-1  rounded-md"
             >
-           Add option
+              Add option
             </button>
           </div>
 
@@ -90,9 +92,7 @@ export function RadioButtonField(props: {
                   <input
                     type="text"
                     value={option.option}
-                    onChange={(e) =>
-                      updateOption(option.id, e.target.value)
-                    }
+                    onChange={(e) => updateOption(option.id, e.target.value)}
                     className="rounded-md border block flex-1 min-w-0 w-full text-sm p-1 bg-sky-100 border-sky-500 placeholder-sky-400 text-gray-900 focus:border-gray-500"
                     placeholder="Enter a option"
                   />
